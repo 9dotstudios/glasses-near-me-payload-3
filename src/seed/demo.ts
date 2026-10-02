@@ -1,5 +1,6 @@
 import type { Payload } from 'payload'
 
+import { guideLibrary } from './guideLibrary'
 import { richText } from './richText'
 
 type Block = Record<string, unknown>
@@ -21,6 +22,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
           blockType: 'hero',
           scheme: 'scheme-2',
           fullHeight: true,
+          imageUrl: '/marketing/hero.jpg',
           eyebrow: 'Independent optical directory',
           heading: 'Find a good optician, not just a nearby one.',
           body: '1,992 independent optical shops and optometrists across Malaysia, Singapore and Australia — with the public rating real customers gave each one, and the phone number to call. Free to browse, no sign-up, and no shop can pay its way up the list.',
@@ -104,9 +106,10 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
           heading: 'Choose a country',
           body: 'Three countries live today. Pick one to browse its towns and areas, with shop counts and public ratings on every listing.',
           columns: '3',
+          variant: 'media',
           items: [
             {
-              icon: 'location_on',
+              imageUrl: '/marketing/malaysia.jpg',
               title: 'Malaysia',
               description:
                 '1,079 independent shops across 42 towns — from Kuala Lumpur and Petaling Jaya to Miri and Kota Bharu.',
@@ -114,7 +117,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
               linkHref: '/find-a-shop/malaysia',
             },
             {
-              icon: 'location_on',
+              imageUrl: '/marketing/singapore.jpg',
               title: 'Singapore',
               description:
                 '280 independent shops across 108 areas — about three shops per area, so the choice is usually local.',
@@ -122,7 +125,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
               linkHref: '/find-a-shop/singapore',
             },
             {
-              icon: 'location_on',
+              imageUrl: '/marketing/australia.jpg',
               title: 'Australia',
               description:
                 '633 independent shops across 437 areas — wide and thin, with only one or two shops in most areas.',
@@ -134,6 +137,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
         {
           blockType: 'stats',
           scheme: 'scheme-2',
+          centered: true,
           eyebrow: 'Live coverage',
           heading: "What's in the directory today",
           body: 'Compiled from public sources and refreshed as shops open and close. Ratings and review counts are snapshots and may change.',
@@ -152,9 +156,11 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
           body: 'Plain-English guides to the parts of buying glasses that rarely get explained — starting with what an eye test should actually cost.',
           linkLabel: 'See all guides',
           linkHref: '/guides',
+          variant: 'media',
           items: [
             {
               tag: 'Eye tests',
+              imageUrl: '/marketing/guide-tests.jpg',
               title: 'How much does an eye test cost in Malaysia?',
               excerpt:
                 'Many shops give a free basic test when you buy glasses. A standalone refraction commonly runs RM30–RM120, and a full eye-health check at a clinic can reach RM400.',
@@ -162,6 +168,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
             },
             {
               tag: "Children's eyes",
+              imageUrl: '/marketing/guide-children.jpg',
               title: 'Myopia control in children: what parents should know',
               excerpt:
                 'The options that actually slow myopia progression, and the questions to ask your optometrist before you commit to any of them.',
@@ -169,6 +176,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
             },
             {
               tag: 'Prescriptions',
+              imageUrl: '/marketing/guide-rx.jpg',
               title: 'How to read your glasses prescription',
               excerpt:
                 "What SPH, CYL, AXIS and PD actually mean, in plain English — so you can read the slip you were handed and understand what you're being sold.",
@@ -218,6 +226,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
         {
           blockType: 'cta',
           scheme: 'scheme-5',
+          card: true,
           eyebrow: 'For shop owners',
           heading: 'Already listed? Claim it and correct it.',
           body: "Listings are compiled from public sources, so yours is probably already here. Claim it to fix the details, or add it if we've missed you. Neither costs anything.",
@@ -240,6 +249,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
         {
           blockType: 'hero',
           scheme: 'scheme-2',
+          imageUrl: '/marketing/about.jpg',
           heading: 'About Glasses Near Me',
           body: 'A free directory of optical shops and optometrists, built from public data, where no shop can pay for a better position. This page is the method behind it.',
         },
@@ -280,6 +290,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
         {
           blockType: 'stats',
           scheme: 'scheme-1',
+          centered: true,
           eyebrow: 'Coverage',
           heading: 'How much of the market is actually here',
           body: 'Live totals taken from the directory itself, rather than rounded up for effect.',
@@ -287,7 +298,6 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
             { value: '1,992', title: 'Shops listed', description: 'Across Malaysia, Singapore and Australia.' },
             { value: '587', title: 'Towns and areas', description: 'Not one national list — each is a place with its own page.' },
             { value: '1,079', title: 'Shops in Malaysia alone', description: 'The deepest market so far, spread across 42 towns.' },
-            { value: '0', title: 'Paid placements', description: 'No shop can buy a higher position, a better rating or a badge.' },
           ],
         },
         {
@@ -323,6 +333,15 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
             },
           ],
         },
+        {
+          blockType: 'cta',
+          scheme: 'scheme-5',
+          eyebrow: 'Use it',
+          heading: 'Start with your own town',
+          body: 'Pick a country, then a town. Every listing carries a rating, a review count and a phone number where the shop publishes one — enough to shortlist two or three before you call.',
+          primaryLabel: 'Find a shop near you',
+          primaryHref: '/find-a-shop',
+        },
       ],
     },
     {
@@ -337,6 +356,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
         {
           blockType: 'hero',
           scheme: 'scheme-2',
+          imageUrl: '/marketing/opticians.jpg',
           heading: 'Your shop is probably already listed',
           body: 'Independent optical shops across Malaysia, Singapore and Australia are in the directory already, compiled from public sources. You did not have to do anything, and there is nothing to pay. What you can do is make the listing accurate.',
           primaryLabel: 'Claim or correct a listing',
@@ -444,6 +464,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
         {
           blockType: 'cta',
           scheme: 'scheme-5',
+          card: true,
           eyebrow: 'Start here',
           heading: 'Get the listing right, then leave it alone',
           body: 'It takes a few minutes: add the shop if it is missing, or claim it if it is already here. After that there is nothing to maintain unless your details change.',
@@ -547,12 +568,22 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
         {
           blockType: 'hero',
           scheme: 'scheme-2',
+          imageUrl: '/marketing/guides.jpg',
           heading: 'Eye care guides, in plain English',
           body: "What an eye test really costs, why a child's short-sightedness keeps getting worse, and whether the lens upgrade on the counter is worth the money. Written to give you the questions to ask, not a sale.",
         },
         {
-          blockType: 'featureGrid',
+          blockType: 'searchPrompt',
           scheme: 'scheme-1',
+          heading: 'Search the guides',
+          body: 'Search by town, topic, or keyword.',
+          placeholder: 'Town, topic, or keyword',
+          buttonLabel: 'Search guides',
+          href: '/guides',
+        },
+        {
+          blockType: 'featureGrid',
+          scheme: 'scheme-4',
           eyebrow: 'Browse by topic',
           heading: "Pick the question you're asking",
           body: 'Four topics, four guides. Each one answers a single question properly, and tells you what to do with the answer.',
@@ -587,6 +618,18 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
               linkHref: '/guides/are-blue-light-glasses-worth-it',
             },
           ],
+        },
+        {
+          blockType: 'contentFeed',
+          scheme: 'scheme-4',
+          heading: 'Every guide in the library',
+          body: 'Every published guide, including the town-by-town eye-test notes. The four cards above are the starting questions.',
+          variant: 'text',
+          items: guideLibrary.map((guide) => ({
+            title: guide.title,
+            excerpt: guide.excerpt,
+            href: guide.href,
+          })),
         },
         {
           blockType: 'cta',
@@ -647,6 +690,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
         {
           blockType: 'hero',
           scheme: 'scheme-2',
+          imageUrl: '/marketing/find.jpg',
           heading: 'Find a shop',
           body: '1,992 independent optical shops and optometrists across Malaysia, Singapore and Australia, compiled from public sources. Pick a country to see its towns and areas.',
         },
@@ -665,23 +709,27 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
           heading: 'Choose a country',
           body: 'Three countries live today. Each one lists its towns and areas with shop counts, public ratings and phone numbers where the shop publishes one.',
           columns: '3',
+          variant: 'media',
           items: [
             {
+              imageUrl: '/marketing/malaysia.jpg',
               title: 'Malaysia',
               description: '1,079 independent shops across 42 towns.',
-              linkLabel: 'Browse Malaysia',
+              linkLabel: 'Browse 1,079 shops',
               linkHref: '/find-a-shop/malaysia',
             },
             {
+              imageUrl: '/marketing/singapore.jpg',
               title: 'Singapore',
               description: '280 independent shops across 108 areas.',
-              linkLabel: 'Browse Singapore',
+              linkLabel: 'Browse 280 shops',
               linkHref: '/find-a-shop/singapore',
             },
             {
+              imageUrl: '/marketing/australia.jpg',
               title: 'Australia',
               description: '633 independent shops across 437 areas.',
-              linkLabel: 'Browse Australia',
+              linkLabel: 'Browse 633 shops',
               linkHref: '/find-a-shop/australia',
             },
           ],
@@ -730,11 +778,33 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
             },
           ],
         },
+        {
+          blockType: 'cta',
+          scheme: 'scheme-5',
+          card: true,
+          eyebrow: 'For shop owners',
+          heading: 'Own one of these shops?',
+          body: "Listings are compiled from public sources, so yours is probably already here. Claim it to fix the details, or add it if we've missed you. Neither costs anything.",
+          primaryLabel: 'Claim or correct your listing',
+          primaryHref: '/for-opticians/claim-or-correct-a-listing',
+          secondaryLabel: 'Add your shop',
+          secondaryHref: '/add',
+        },
       ],
     },
-    country('malaysia', 'Malaysia', '1,079 independent shops across 42 towns — from Kuala Lumpur and Petaling Jaya to Miri and Kota Bharu.'),
-    country('singapore', 'Singapore', '280 independent shops across 108 areas — about three shops per area, so the choice is usually local.'),
-    country('australia', 'Australia', '633 independent shops across 437 areas — wide and thin, with only one or two shops in most areas.'),
+    country('malaysia', 'Malaysia', '1,079 independent shops across 42 towns — from Kuala Lumpur and Petaling Jaya to Miri and Kota Bharu.', '/marketing/malaysia.jpg'),
+    country(
+      'singapore',
+      'Singapore',
+      '280 independent shops across 108 areas — about three shops per area, so the choice is usually local.',
+      '/marketing/singapore.jpg',
+    ),
+    country(
+      'australia',
+      'Australia',
+      '633 independent shops across 437 areas — wide and thin, with only one or two shops in most areas.',
+      '/marketing/australia.jpg',
+    ),
     {
       title: 'Add a listing',
       slug: 'add',
@@ -772,11 +842,18 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
       },
       layout: [
         {
-          blockType: 'richContent',
+          blockType: 'hero',
           scheme: 'scheme-1',
+          frame: 'card',
+          align: 'center',
           heading: 'Privacy policy',
+          body: 'What this site collects when you browse, what happens if you submit a listing or a correction, and what it does not do.',
+        },
+        {
+          blockType: 'richContent',
+          scheme: 'scheme-4',
+          narrow: true,
           content: richText([
-            'What this site collects when you browse, what happens if you submit a listing or a correction, and what it does not do.',
             { heading: 'What this policy covers' },
             'Glasses Near Me is a free-to-browse directory of optical shops. There is no account, no login and no subscription.',
             { heading: 'Browsing the directory' },
@@ -803,11 +880,18 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
       },
       layout: [
         {
-          blockType: 'richContent',
+          blockType: 'hero',
           scheme: 'scheme-1',
+          frame: 'card',
+          align: 'center',
           heading: 'Terms of use',
+          body: 'The short version: listings are compiled from public sources, they are a snapshot that changes, and being listed here is not an endorsement by us.',
+        },
+        {
+          blockType: 'richContent',
+          scheme: 'scheme-4',
+          narrow: true,
           content: richText([
-            'The short version: listings are compiled from public sources, they are a snapshot that changes, and being listed here is not an endorsement by us.',
             { heading: 'What this site is' },
             'Glasses Near Me is an independent, free-to-browse directory of optical shops and optometrists. It is not a marketplace, it does not sell eyewear, and it is not affiliated with any of the shops listed in it.',
             { heading: 'Where the data comes from' },
@@ -895,7 +979,7 @@ function guide(input: { slug: string; title: string; eyebrow: string; paragraphs
   }
 }
 
-function country(slug: string, name: string, description: string) {
+function country(slug: string, name: string, description: string, imageUrl: string) {
   return {
     title: name,
     slug: `find-a-shop/${slug}`,
@@ -907,6 +991,7 @@ function country(slug: string, name: string, description: string) {
       {
         blockType: 'hero',
         scheme: 'scheme-2',
+        imageUrl,
         eyebrow: 'Find a shop',
         heading: name,
         body: description,
@@ -934,8 +1019,21 @@ function country(slug: string, name: string, description: string) {
   }
 }
 
+const seededSlugs = new Set(pages.map((page) => page.slug))
+
+const libraryPages = guideLibrary
+  .filter((card) => !seededSlugs.has(card.href.replace(/^\//, '')))
+  .map((card) =>
+    guide({
+      slug: card.href.replace(/^\//, ''),
+      title: card.title,
+      eyebrow: 'Guides',
+      paragraphs: [card.excerpt],
+    }),
+  )
+
 export async function seedDemoPages(payload: Payload) {
-  for (const page of pages) {
+  for (const page of [...pages, ...libraryPages]) {
     const existing = await payload.find({
       collection: 'pages',
       depth: 0,

@@ -2,7 +2,7 @@
 
 Marketing site for [Glasses Near Me](https://glassesnearme.org): Payload CMS 3 and Next.js on Cloudflare Workers, D1, and R2. The app follows the Studios Payload Cloudflare template (OpenNext, Users, Media, Worker bindings) and is branded as its own project.
 
-The public theme is built with [`@relume_io/relume-ui`](https://react-docs.relume.io/) and Tailwind CSS 3. Colors, type, and chrome follow the live Relume site: forest `#074F37`, near-black `#080706`, mint `#EAF9F4`, Inter, and the same header and footer information architecture. Directory, search-index, and geo JavaScript are not included.
+The public theme is built with [`@relume_io/relume-ui`](https://react-docs.relume.io/) and Tailwind CSS 3. Colors, type, and chrome follow the live Relume site: forest `#074F37`, near-black `#080706`, mint `#EAF9F4`, Fraunces headings, Inter body text, 16px radii, and the same header and footer information architecture. Directory, search-index, and geo JavaScript are not included.
 
 ## Stack
 

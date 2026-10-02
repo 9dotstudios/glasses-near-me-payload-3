@@ -26,7 +26,7 @@ const config: Config = {
         sm: '100vw',
         md: '100vw',
         lg: '992px',
-        xl: '1280px',
+        xl: '80rem',
       },
     },
     extend: {
@@ -87,11 +87,13 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        heading: ['Fraunces', 'Iowan Old Style', 'Palatino', 'serif'],
       },
       borderRadius: {
-        sm: '2px',
-        md: '4px',
-        lg: '4px',
+        sm: '16px',
+        md: '16px',
+        lg: '20px',
+        xl: '24px',
       },
     },
   },
