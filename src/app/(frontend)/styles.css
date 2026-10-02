@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,500,0,0&display=swap');
+
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Glasses Near Me tokens, taken from the live Relume export (assets/tokens.css
+  equivalents): forest scheme 3, near-black scheme 2, mint scheme 5.
+*/
+:root {
+  --color-forest: #074f37;
+  --color-forest-secondary: #0a7250;
+  --color-forest-deep: #042e20;
+  --color-mint: #66d2ae;
+  --color-mist: #eaf9f4;
+  --color-mist-deep: #cef1e5;
+  --color-accent: #0d9769;
+  --color-ink: #080706;
+  --color-stone: #1c1917;
+  --color-emerald: #10b981;
+  --font-family-heading: Inter, system-ui, sans-serif;
+  --font-family-body: Inter, system-ui, sans-serif;
+  --heading-weight: 600;
+  --heading-letter-spacing: -0.03em;
+  --radius-small: 2px;
+  --radius-medium: 4px;
+}
+
+.gnm-site {
+  margin: 0;
+  background: var(--color-ink);
+  color: var(--color-ink);
+  font-family: var(--font-family-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.gnm-site h1,
+.gnm-site h2,
+.gnm-site h3,
+.gnm-site h4,
+.gnm-site h5,
+.gnm-site h6 {
+  font-family: var(--font-family-heading);
+  font-weight: var(--heading-weight);
+  letter-spacing: var(--heading-letter-spacing);
+  line-height: 1.2;
+}
+
+.gnm-scheme-1,
+.gnm-scheme-4 {
+  --gnm-heading: #080706;
+  --gnm-muted: rgba(8, 7, 6, 0.7);
+  --gnm-accent: #0d9769;
+  --gnm-line: rgba(8, 7, 6, 0.15);
+}
+
+.gnm-scheme-2 {
+  --gnm-heading: #ffffff;
+  --gnm-muted: rgba(255, 255, 255, 0.7);
+  --gnm-accent: #10b981;
+  --gnm-line: rgba(255, 255, 255, 0.2);
+}
+
+.gnm-scheme-3 {
+  --gnm-heading: #ffffff;
+  --gnm-muted: rgba(255, 255, 255, 0.7);
+  --gnm-accent: #66d2ae;
+  --gnm-line: rgba(255, 255, 255, 0.2);
+}
+
+.gnm-scheme-5 {
+  --gnm-heading: #080706;
+  --gnm-muted: rgba(8, 7, 6, 0.7);
+  --gnm-accent: #0d9769;
+  --gnm-line: rgba(8, 7, 6, 0.15);
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 24;
+  line-height: 1;
+}
+
+.gnm-site .prose {
+  color: var(--gnm-muted, rgba(8, 7, 6, 0.8));
+}
+
+.gnm-site .prose h2,
+.gnm-site .prose h3,
+.gnm-site .prose strong {
+  color: var(--gnm-heading, #080706);
+}
