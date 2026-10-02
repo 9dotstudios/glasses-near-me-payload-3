@@ -6,7 +6,7 @@
 import { execFileSync } from 'node:child_process'
 import { randomBytes } from 'node:crypto'
 
-const workerName = 'studios-payload'
+const workerName = 'glasses-near-me-payload'
 
 function wrangler(args, options = {}) {
   return execFileSync('wrangler', args, {
@@ -54,7 +54,7 @@ try {
 } catch (error) {
   const message = error instanceof Error ? error.message : String(error)
   console.error(
-    'Failed to set PAYLOAD_SECRET. Create it in the Cloudflare dashboard (Workers → studios-payload → Settings → Variables and Secrets) or run `wrangler secret put PAYLOAD_SECRET`.',
+    'Failed to set PAYLOAD_SECRET. Create it in the Cloudflare dashboard (Workers → glasses-near-me-payload → Settings → Variables and Secrets) or run `wrangler secret put PAYLOAD_SECRET`.',
   )
   console.error(message.split('\n')[0])
   process.exit(1)

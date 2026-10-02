@@ -59,7 +59,21 @@ Search fields keep the live layout (heading beside a Relume `Input` and `Button`
 
 ## Deploy
 
-Create a D1 database and an R2 bucket, then put their ids in `wrangler.jsonc` (`glasses-near-me-payload-db`, `glasses-near-me-payload-media`). `PAYLOAD_SECRET` is a Worker secret, not a file in git.
+This app is an OpenNext Worker (Payload server, D1, R2, and `/admin`). Cloudflare Pages’ Next.js preset is a static HTML export and cannot host this stack, so the preview is a Worker on `*.workers.dev`, the same pattern as studios-payload. Do not attach `glassesnearme.org` or any other custom hostname. `wrangler.jsonc` sets `workers_dev: true` and has no `routes`.
+
+Dedicated resources (do not reuse `studios-payload`):
+
+| Resource | Name |
+| --- | --- |
+| Worker | `glasses-near-me-payload` |
+| D1 | `glasses-near-me-payload-db` (`4403dc2d-fbce-474c-b527-2c2e47eaec6b`) |
+| R2 | `glasses-near-me-payload-media` |
+
+`PAYLOAD_SECRET` is a Worker secret, not a file in git. `pnpm deploy` runs `scripts/ensure-payload-secret.mjs`, which sets it with `wrangler secret put PAYLOAD_SECRET` only when it is missing and does not print the value. To set it yourself:
+
+```bash
+openssl rand -hex 32 | pnpm exec wrangler secret put PAYLOAD_SECRET
+```
 
 ```bash
 pnpm payload migrate:create   # after schema changes
@@ -67,9 +81,13 @@ pnpm generate:types
 pnpm build && pnpm deploy
 ```
 
-`pnpm build` is the OpenNext Cloudflare build (`next build --webpack`) plus the Workers PBKDF2 patch from the Studios template. `pnpm deploy` migrates remote D1, deploys the Worker, and creates `PAYLOAD_SECRET` if it is missing. This bundle is in the same size class as the Payload Cloudflare template and is meant for the Workers paid plan.
+`pnpm build` is the OpenNext Cloudflare build (`next build --webpack`) plus the Workers PBKDF2 patch from the Studios template. `pnpm deploy` migrates remote D1, deploys the Worker, and creates `PAYLOAD_SECRET` if it is missing. This bundle is in the same size class as the Payload Cloudflare template and is meant for the Workers paid plan. Wrangler must already be logged in (`wrangler login` or `CLOUDFLARE_API_TOKEN`).
 
-After the first deploy, open `/admin` and create the first user. The demo seed runs when the Pages collection is empty.
+`wrangler.jsonc` targets the 9dot account resources above and sets `workers_dev: true` with no `routes`, so a logged-in deploy stays on `https://glasses-near-me-payload.<account-subdomain>.workers.dev`. The D1 binding is marked `remote: true` so `pnpm deploy` migrates that remote database. Local `pnpm dev` still uses Wrangler’s local D1, because remote bindings are enabled only when `NODE_ENV` is production.
+
+The clickable preview from this environment is a temporary Workers account, because Wrangler here is not logged into the 9dot account (the Cloudflare API token can create D1 and R2, and cannot upload this Worker). That preview is `https://glasses-near-me-payload.aboard-second.workers.dev`. It has its own D1 database, no R2 binding, and no custom hostname. `PAYLOAD_SECRET` is set on that Worker and is not stored in git. Open `/admin` to create the first user. The temporary account must be claimed from the deploy report or Cloudflare deletes it.
+
+After `wrangler login` on the 9dot account, `pnpm build && pnpm deploy` publishes this config onto that account’s `workers.dev` subdomain and the R2 bucket above. Still do not attach `glassesnearme.org`.
 
 ## Scripts
 

@@ -2,6 +2,9 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
   "name": "glasses-near-me-payload",
+  "account_id": "94068cc076ded5a2933285c09a5f9d0d",
+  // Preview-only: workers.dev subdomain. Do not add routes or custom domains.
+  "workers_dev": true,
   "compatibility_date": "2026-10-02",
   "compatibility_flags": [
     "nodejs_compat",
@@ -20,8 +23,9 @@
   "d1_databases": [
     {
       "binding": "D1",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "4403dc2d-fbce-474c-b527-2c2e47eaec6b",
       "database_name": "glasses-near-me-payload-db",
+      "remote": true,
     },
   ],
   "r2_buckets": [
