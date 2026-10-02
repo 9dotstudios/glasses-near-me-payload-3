@@ -39,9 +39,9 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 bg-[#074F37] text-white">
-      <div className="container flex items-center justify-between gap-6 px-[5%] py-4 lg:px-0">
-        <Link href="/" aria-label="Glasses Near Me home" className="shrink-0">
+    <header className="gnm-nav relative">
+      <div className="flex w-full items-center justify-between gap-6">
+        <Link href="/" aria-label="Home" className="relative z-[2] shrink-0">
           <Image
             src="/brand/logo-light.png"
             alt="Glasses Near Me"
@@ -52,17 +52,17 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-4 lg:flex" aria-label="Primary">
           <DropdownMenu>
-            <DropdownMenuTrigger className="inline-flex items-center gap-1 text-base font-medium text-white">
+            <DropdownMenuTrigger className="gnm-nav-link">
               Find a shop
-              <span className="material-symbols-outlined text-xl">keyboard_arrow_down</span>
+              <span className="material-symbols-rounded text-xl">keyboard_arrow_down</span>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="min-w-72 bg-white p-2 text-[#080706]">
+            <DropdownMenuContent align="start" className="min-w-72 rounded-2xl bg-white p-2 text-[#080706]">
               {countries.map((country) => (
                 <DropdownMenuItem key={country.href} asChild>
-                  <Link href={country.href} className="flex flex-col items-start gap-0.5 px-3 py-2">
-                    <span className="font-semibold">{country.title}</span>
+                  <Link href={country.href} className="flex flex-col items-start gap-0.5 rounded-xl px-3 py-2">
+                    <span className="font-medium">{country.title}</span>
                     <span className="text-sm text-black/60">{country.detail}</span>
                   </Link>
                 </DropdownMenuItem>
@@ -70,11 +70,15 @@ export function SiteHeader() {
             </DropdownMenuContent>
           </DropdownMenu>
           {links.map((link) => (
-            <Link key={link.href} href={link.href} className="text-base font-medium">
+            <Link key={link.href} href={link.href} className="gnm-nav-link">
               {link.label}
             </Link>
           ))}
-          <Button asChild className="!border-transparent !bg-white !text-[#080706] hover:!bg-white/90">
+          <Button
+            asChild
+            size="sm"
+            className="gnm-nav-cta !border-transparent !bg-white !px-4 !py-2 !text-base !text-[#080706] hover:!bg-white/90"
+          >
             <Link href="/add">Add your shop</Link>
           </Button>
         </nav>
@@ -86,28 +90,33 @@ export function SiteHeader() {
           aria-controls="mobile-nav"
           onClick={() => setOpen((value) => !value)}
         >
-          <span className="material-symbols-outlined text-3xl">{open ? 'close' : 'menu'}</span>
+          <span className="material-symbols-rounded text-3xl">{open ? 'close' : 'menu'}</span>
           <span className="sr-only">Menu</span>
         </button>
       </div>
 
       {open ? (
-        <nav id="mobile-nav" className="border-t border-white/15 px-[5%] py-4 lg:hidden" aria-label="Mobile">
+        <nav
+          id="mobile-nav"
+          className="absolute inset-x-0 top-full border-t border-white/15 bg-[#074F37] px-[var(--page-padding)] py-4 lg:hidden"
+          aria-label="Mobile"
+        >
           <p className="mb-2 text-sm text-white/70">Find a shop</p>
           <div className="mb-4 flex flex-col gap-2">
             {countries.map((country) => (
               <Link key={country.href} href={country.href} onClick={() => setOpen(false)} className="font-medium">
                 {country.title}
+                <span className="mt-0.5 block text-sm font-normal text-white/70">{country.detail}</span>
               </Link>
             ))}
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
             {links.map((link) => (
-              <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="font-medium">
+              <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="gnm-nav-link px-0">
                 {link.label}
               </Link>
             ))}
-            <Button asChild className="!mt-2 !border-transparent !bg-white !text-[#080706]">
+            <Button asChild size="sm" className="gnm-nav-cta !mt-3 !border-transparent !bg-white !text-[#080706]">
               <Link href="/add" onClick={() => setOpen(false)}>
                 Add your shop
               </Link>

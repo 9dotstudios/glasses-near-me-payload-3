@@ -6,15 +6,15 @@ import React from 'react'
 
 import type { Page } from '@/payload-types'
 
-import { Eyebrow, Icon, Section, isDarkScheme } from './Section'
+import { Eyebrow, Icon, Section, isDarkScheme, normalizeScheme } from './Section'
 import { SchemeButtons } from './SchemeButtons'
 
 type LayoutBlock = NonNullable<Page['layout']>[number]
 
 const columnClass: Record<string, string> = {
-  '2': 'md:grid-cols-2',
-  '3': 'md:grid-cols-2 lg:grid-cols-3',
-  '4': 'md:grid-cols-2 lg:grid-cols-4',
+  '2': 'lg:grid-cols-2',
+  '3': 'lg:grid-cols-3',
+  '4': 'lg:grid-cols-4',
 }
 
 function mediaUrl(image: { url?: string | null; alt?: string | null } | number | null | undefined) {
@@ -22,25 +22,84 @@ function mediaUrl(image: { url?: string | null; alt?: string | null } | number |
   return image.url ? { url: image.url, alt: image.alt || '' } : null
 }
 
+function Intro({
+  eyebrow,
+  heading,
+  body,
+  as = 'h2',
+  align = 'start',
+}: {
+  eyebrow?: string | null
+  heading?: string | null
+  body?: string | null
+  as?: 'h1' | 'h2'
+  align?: 'start' | 'center'
+}) {
+  const Heading = as
+  return (
+    <div className={`gnm-intro ${align === 'center' ? 'gnm-intro-center' : ''}`}>
+      <div className="gnm-intro-title">
+        <Eyebrow>{eyebrow}</Eyebrow>
+        {heading ? <Heading className={as === 'h1' ? 'gnm-h1' : 'gnm-h2'}>{heading}</Heading> : null}
+      </div>
+      {body ? <p className="gnm-body">{body}</p> : null}
+    </div>
+  )
+}
+
 function Hero({ block }: { block: Extract<LayoutBlock, { blockType: 'hero' }> }) {
+  const framed = block.frame === 'card'
+  const align = block.align === 'center' || framed ? 'center' : 'start'
+  const photo = Boolean(block.imageUrl)
+  const scheme = normalizeScheme(block.scheme)
+
+  if (framed) {
+    return (
+      <Section scheme={block.scheme} density="medium">
+        <div className={`gnm-card gnm-card-pad ${scheme === 'scheme-5' ? 'gnm-card-mint' : 'gnm-card-paper'}`}>
+          <div className="gnm-center flex flex-col items-center gap-9">
+            <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} as="h1" align="center" />
+            <SchemeButtons
+              scheme="scheme-4"
+              align="center"
+              primaryLabel={block.primaryLabel}
+              primaryHref={block.primaryHref}
+              secondaryLabel={block.secondaryLabel}
+              secondaryHref={block.secondaryHref}
+            />
+          </div>
+        </div>
+      </Section>
+    )
+  }
+
   return (
     <Section
       scheme={block.scheme}
-      className={block.fullHeight ? 'flex min-h-[70vh] items-center lg:min-h-[78vh]' : ''}
+      className={`${block.fullHeight ? 'gnm-section-hero' : ''} ${photo ? 'gnm-on-photo' : ''}`}
     >
-      <div className="max-w-3xl">
-        <Eyebrow>{block.eyebrow}</Eyebrow>
-        <h1 className="text-7xl text-[var(--gnm-heading)] md:text-10xl">{block.heading}</h1>
-        {block.body ? (
-          <p className="mt-6 max-w-2xl text-md text-[var(--gnm-muted)]">{block.body}</p>
+      {photo ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={block.imageUrl || ''} alt="" className="gnm-hero-media" />
+          <div className="gnm-hero-shade" />
+        </>
+      ) : null}
+      <div className={`relative z-[1] ${align === 'center' ? 'gnm-center' : ''}`}>
+        <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} as="h1" align={align} />
+        {block.primaryLabel || block.secondaryLabel ? (
+          <div className="mt-9">
+            <SchemeButtons
+              scheme={photo ? 'scheme-2' : block.scheme}
+              align={align}
+              primaryArrow={photo}
+              primaryLabel={block.primaryLabel}
+              primaryHref={block.primaryHref}
+              secondaryLabel={block.secondaryLabel}
+              secondaryHref={block.secondaryHref}
+            />
+          </div>
         ) : null}
-        <SchemeButtons
-          scheme={block.scheme}
-          primaryLabel={block.primaryLabel}
-          primaryHref={block.primaryHref}
-          secondaryLabel={block.secondaryLabel}
-          secondaryHref={block.secondaryHref}
-        />
       </div>
     </Section>
   )
@@ -50,12 +109,9 @@ function SearchPrompt({ block }: { block: Extract<LayoutBlock, { blockType: 'sea
   const dark = isDarkScheme(block.scheme)
   return (
     <Section scheme={block.scheme}>
-      <div className="grid items-center gap-10 lg:grid-cols-2">
-        <div>
-          <h2 className="text-6xl text-[var(--gnm-heading)] md:text-8xl">{block.heading}</h2>
-          {block.body ? <p className="mt-5 max-w-xl text-[var(--gnm-muted)]">{block.body}</p> : null}
-        </div>
-        <form action={block.href || '/find-a-shop'} method="get" className="max-w-xl" role="search">
+      <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+        <Intro heading={block.heading} body={block.body} />
+        <form action={block.href || '/find-a-shop'} method="get" className="w-full max-w-[36rem]" role="search">
           <label className="sr-only" htmlFor="gnm-search">
             Search towns and shops
           </label>
@@ -63,17 +119,10 @@ function SearchPrompt({ block }: { block: Extract<LayoutBlock, { blockType: 'sea
             id="gnm-search"
             name="q"
             placeholder={block.placeholder || 'Town or shop name'}
-            className={
-              dark
-                ? 'h-12 w-full !border-white/20 !bg-white/10 !text-white placeholder:!text-white/60'
-                : 'h-12 w-full'
-            }
+            className={dark ? 'gnm-field !border-white/20 !bg-white/10 !text-white placeholder:!text-white/60' : 'gnm-field'}
           />
-          <Button
-            type="submit"
-            className={`mt-4 ${dark ? '!border-transparent !bg-white !text-[#080706]' : ''}`}
-          >
-            <span className="material-symbols-outlined text-xl">search</span>
+          <Button type="submit" className={`mt-3 !rounded-[16px] !px-5 !py-3 ${dark ? '!border-transparent !bg-white !text-[#080706]' : '!border-[#1c1917] !bg-[#1c1917] !text-white'}`}>
+            <span className="material-symbols-rounded text-xl">search</span>
             {block.buttonLabel || 'Search'}
           </Button>
         </form>
@@ -84,27 +133,44 @@ function SearchPrompt({ block }: { block: Extract<LayoutBlock, { blockType: 'sea
 
 function FeatureGrid({ block }: { block: Extract<LayoutBlock, { blockType: 'featureGrid' }> }) {
   const columns = columnClass[block.columns || '4'] || columnClass['4']
+  const media = block.variant === 'media'
+  const dark = isDarkScheme(block.scheme)
   return (
     <Section scheme={block.scheme}>
-      <div className="max-w-3xl">
-        <Eyebrow>{block.eyebrow}</Eyebrow>
-        <h2 className="text-6xl text-[var(--gnm-heading)] md:text-8xl">{block.heading}</h2>
-        {block.body ? <p className="mt-5 max-w-2xl text-[var(--gnm-muted)]">{block.body}</p> : null}
-      </div>
-      <div className={`mt-12 grid gap-10 ${columns}`}>
-        {block.items?.map((item) => (
-          <article key={item.id || item.title} className="flex flex-col gap-4">
-            <Icon name={item.icon} />
-            <h3 className="text-4xl text-[var(--gnm-heading)]">{item.title}</h3>
-            {item.description ? <p className="text-[var(--gnm-muted)]">{item.description}</p> : null}
-            {item.linkLabel && item.linkHref ? (
-              <Link href={item.linkHref} className="mt-auto inline-flex items-center gap-1 font-medium text-[var(--gnm-accent)]">
-                {item.linkLabel}
-                <span className="material-symbols-outlined text-xl">arrow_forward</span>
-              </Link>
-            ) : null}
-          </article>
-        ))}
+      <div className="gnm-block">
+        <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} />
+        <div className={`grid grid-cols-1 gap-y-16 ${media ? 'gap-x-12' : 'gap-x-8'} max-lg:gap-y-12 ${block.columns === '4' ? 'sm:grid-cols-2' : ''} ${columns}`}>
+          {block.items?.map((item) => (
+            <article key={item.id || item.title} className="flex flex-col gap-6">
+              {media && item.imageUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={item.imageUrl} alt="" className="gnm-media gnm-media-land" />
+              ) : (
+                <Icon name={item.icon} />
+              )}
+              <div className="flex flex-col gap-6">
+                <h3 className="gnm-h4">{item.title}</h3>
+                {item.description ? <p className="gnm-body max-w-none">{item.description}</p> : null}
+              </div>
+              {item.linkLabel && item.linkHref ? (
+                media ? (
+                  <Button
+                    asChild
+                    variant="secondary"
+                    className={`mt-auto w-fit !rounded-[16px] !px-5 !py-3 !text-base ${dark ? '!border-white/20 !bg-transparent !text-white' : '!border-[rgba(28,25,23,0.2)] !bg-transparent !text-[#1c1917]'}`}
+                  >
+                    <Link href={item.linkHref}>{item.linkLabel}</Link>
+                  </Button>
+                ) : (
+                  <Link href={item.linkHref} className="mt-auto inline-flex items-center gap-2 font-medium">
+                    {item.linkLabel}
+                    <span className="material-symbols-rounded text-xl">arrow_forward</span>
+                  </Link>
+                )
+              ) : null}
+            </article>
+          ))}
+        </div>
       </div>
     </Section>
   )
@@ -113,78 +179,94 @@ function FeatureGrid({ block }: { block: Extract<LayoutBlock, { blockType: 'feat
 function Process({ block }: { block: Extract<LayoutBlock, { blockType: 'process' }> }) {
   return (
     <Section scheme={block.scheme}>
-      <div className="max-w-3xl">
-        <Eyebrow>{block.eyebrow}</Eyebrow>
-        <h2 className="text-6xl text-[var(--gnm-heading)] md:text-8xl">{block.heading}</h2>
-        {block.body ? <p className="mt-5 max-w-2xl text-[var(--gnm-muted)]">{block.body}</p> : null}
+      <div className="gnm-block">
+        <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} />
+        <ol className="grid gap-12 lg:grid-cols-3 lg:gap-x-12">
+          {block.steps?.map((step) => (
+            <li key={step.id || step.label} className="flex flex-col gap-6">
+              <div className="flex items-center gap-4">
+                <span className="gnm-step-num">{step.label}</span>
+                <span className="gnm-step-line" />
+              </div>
+              <div className="flex flex-col gap-6">
+                <h3 className="gnm-h5">{step.title}</h3>
+                {step.description ? <p className="gnm-body max-w-none">{step.description}</p> : null}
+              </div>
+            </li>
+          ))}
+        </ol>
       </div>
-      <ol className="mt-12 grid gap-10 md:grid-cols-3">
-        {block.steps?.map((step) => (
-          <li key={step.id || step.label}>
-            <div className="mb-5 flex items-center gap-4">
-              <span className="text-2xl font-semibold text-[var(--gnm-heading)]">{step.label}</span>
-              <span className="h-px flex-1 bg-[var(--gnm-line)]" />
-            </div>
-            <h3 className="text-2xl text-[var(--gnm-heading)]">{step.title}</h3>
-            {step.description ? <p className="mt-3 text-[var(--gnm-muted)]">{step.description}</p> : null}
-          </li>
-        ))}
-      </ol>
     </Section>
   )
 }
 
 function Stats({ block }: { block: Extract<LayoutBlock, { blockType: 'stats' }> }) {
+  const centered = Boolean(block.centered)
+  const count = block.items?.length || 0
+  const cols = count >= 4 ? 'lg:grid-cols-4' : count === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-2'
   return (
     <Section scheme={block.scheme}>
-      <div className="max-w-3xl">
-        <Eyebrow>{block.eyebrow}</Eyebrow>
-        <h2 className="text-6xl text-[var(--gnm-heading)] md:text-8xl">{block.heading}</h2>
-        {block.body ? <p className="mt-5 max-w-2xl text-[var(--gnm-muted)]">{block.body}</p> : null}
-      </div>
-      <div className="mt-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-        {block.items?.map((item) => (
-          <article key={item.id || item.title}>
-            <p className="text-8xl text-[var(--gnm-heading)] md:text-10xl">{item.value}</p>
-            <h3 className="mt-3 text-xl text-[var(--gnm-heading)]">{item.title}</h3>
-            {item.description ? <p className="mt-2 text-sm text-[var(--gnm-muted)]">{item.description}</p> : null}
-          </article>
-        ))}
+      <div className="gnm-block">
+        <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} align={centered ? 'center' : 'start'} />
+        <div className={`grid gap-10 ${cols} ${centered ? 'text-center' : ''}`}>
+          {block.items?.map((item) => (
+            <article key={item.id || item.title} className={centered ? 'gnm-stat' : ''}>
+              <p className="gnm-h2 max-w-none">{item.value}</p>
+              <h3 className="gnm-h6 mt-6">{item.title}</h3>
+              {item.description ? <p className="gnm-body mx-auto mt-3 max-w-none text-base">{item.description}</p> : null}
+            </article>
+          ))}
+        </div>
       </div>
     </Section>
   )
 }
 
 function ContentFeed({ block }: { block: Extract<LayoutBlock, { blockType: 'contentFeed' }> }) {
+  const textCards = block.variant === 'text'
   return (
     <Section scheme={block.scheme}>
-      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <div className="max-w-3xl">
-          <Eyebrow>{block.eyebrow}</Eyebrow>
-          <h2 className="text-6xl text-[var(--gnm-heading)] md:text-8xl">{block.heading}</h2>
-          {block.body ? <p className="mt-5 max-w-2xl text-[var(--gnm-muted)]">{block.body}</p> : null}
+      <div className="gnm-block">
+        <div className="grid items-end gap-8 lg:grid-cols-[1fr_auto] lg:gap-20">
+          <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} />
+          {block.linkLabel && block.linkHref ? (
+            <Button
+              asChild
+              variant="secondary"
+              className="w-fit !rounded-[16px] !border-[rgba(28,25,23,0.2)] !bg-transparent !px-5 !py-3 !text-base !text-[#1c1917]"
+            >
+              <Link href={block.linkHref}>{block.linkLabel}</Link>
+            </Button>
+          ) : null}
         </div>
-        {block.linkLabel && block.linkHref ? (
-          <Link href={block.linkHref} className="inline-flex items-center gap-1 font-medium text-[var(--gnm-accent)]">
-            {block.linkLabel}
-            <span className="material-symbols-outlined text-xl">arrow_forward</span>
-          </Link>
-        ) : null}
-      </div>
-      <div className="mt-12 grid gap-8 md:grid-cols-3">
-        {block.items?.map((item) => (
-          <article key={item.id || item.title} className="flex flex-col border border-[var(--gnm-line)] p-6">
-            {item.tag ? <p className="text-sm font-medium text-[var(--gnm-accent)]">{item.tag}</p> : null}
-            <h3 className="mt-3 text-2xl text-[var(--gnm-heading)]">{item.title}</h3>
-            {item.excerpt ? <p className="mt-3 flex-1 text-[var(--gnm-muted)]">{item.excerpt}</p> : null}
-            {item.href ? (
-              <Link href={item.href} className="mt-6 inline-flex items-center gap-1 font-medium">
-                Read the guide
-                <span className="material-symbols-outlined text-xl">arrow_forward</span>
+        <div className={`grid gap-8 md:grid-cols-2 lg:grid-cols-3 ${textCards ? 'gap-4' : 'lg:gap-12'}`}>
+          {block.items?.map((item) =>
+            textCards ? (
+              <Link key={item.id || item.title} href={item.href || '/guides'} className="gnm-library-card">
+                <h3>{item.title}</h3>
+                {item.excerpt ? <p className="mt-1 text-sm text-stone-500">{item.excerpt}</p> : null}
               </Link>
-            ) : null}
-          </article>
-        ))}
+            ) : (
+              <article key={item.id || item.title} className="flex flex-col gap-6">
+                {item.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={item.imageUrl} alt="" className="gnm-media gnm-media-wide" />
+                ) : null}
+                <div className="flex flex-1 flex-col gap-6">
+                  {item.tag ? <p className="gnm-tag">{item.tag}</p> : null}
+                  <h3 className="gnm-h5">{item.title}</h3>
+                  {item.excerpt ? <p className="gnm-body max-w-none">{item.excerpt}</p> : null}
+                </div>
+                {item.href ? (
+                  <Link href={item.href} className="inline-flex items-center gap-2 font-medium">
+                    Read the guide
+                    <span className="material-symbols-rounded text-xl">arrow_forward</span>
+                  </Link>
+                ) : null}
+              </article>
+            ),
+          )}
+        </div>
       </div>
     </Section>
   )
@@ -193,19 +275,15 @@ function ContentFeed({ block }: { block: Extract<LayoutBlock, { blockType: 'cont
 function Faq({ block }: { block: Extract<LayoutBlock, { blockType: 'faq' }> }) {
   return (
     <Section scheme={block.scheme}>
-      <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
-        <div>
-          <Eyebrow>{block.eyebrow}</Eyebrow>
-          <h2 className="text-6xl text-[var(--gnm-heading)] md:text-8xl">{block.heading}</h2>
-          {block.body ? <p className="mt-5 text-[var(--gnm-muted)]">{block.body}</p> : null}
-        </div>
+      <div className="gnm-block">
+        <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} />
         <Accordion type="single" collapsible className="border-t border-[var(--gnm-line)]">
           {block.items?.map((item, index) => (
             <AccordionItem key={item.id || item.question} value={item.id || String(index)} className="border-b border-[var(--gnm-line)]">
-              <AccordionTrigger className="py-5 text-left text-md font-semibold text-[var(--gnm-heading)]">
+              <AccordionTrigger className="py-5 text-left text-lg font-medium text-[var(--gnm-heading)]">
                 {item.question}
               </AccordionTrigger>
-              <AccordionContent className="pb-5 text-[var(--gnm-muted)]">{item.answer}</AccordionContent>
+              <AccordionContent className="pb-5 text-base text-[var(--gnm-text)]">{item.answer}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
@@ -215,34 +293,48 @@ function Faq({ block }: { block: Extract<LayoutBlock, { blockType: 'faq' }> }) {
 }
 
 function Cta({ block }: { block: Extract<LayoutBlock, { blockType: 'cta' }> }) {
-  return (
-    <Section scheme={block.scheme}>
-      <div className="max-w-3xl">
-        <Eyebrow>{block.eyebrow}</Eyebrow>
-        <h2 className="text-6xl text-[var(--gnm-heading)] md:text-8xl">{block.heading}</h2>
-        {block.body ? <p className="mt-5 max-w-2xl text-[var(--gnm-muted)]">{block.body}</p> : null}
+  const content = (
+    <>
+      <Intro
+        eyebrow={block.eyebrow}
+        heading={block.heading}
+        body={block.body}
+        align={block.card ? 'center' : 'start'}
+      />
+      <div className={block.body || block.eyebrow ? 'mt-9' : ''}>
         <SchemeButtons
-          scheme={block.scheme}
+          scheme={block.card && block.scheme === 'scheme-5' ? 'scheme-4' : block.scheme}
+          align={block.card ? 'center' : 'start'}
           primaryLabel={block.primaryLabel}
           primaryHref={block.primaryHref}
           secondaryLabel={block.secondaryLabel}
           secondaryHref={block.secondaryHref}
         />
       </div>
-    </Section>
+    </>
   )
+
+  if (block.card) {
+    return (
+      <Section scheme={block.scheme} density="medium">
+        <div className={`gnm-card gnm-card-pad ${block.scheme === 'scheme-5' ? 'gnm-card-mint' : 'gnm-card-paper'}`}>
+          {content}
+        </div>
+      </Section>
+    )
+  }
+
+  return <Section scheme={block.scheme}>{content}</Section>
 }
 
 function RichContent({ block }: { block: Extract<LayoutBlock, { blockType: 'richContent' }> }) {
   return (
     <Section scheme={block.scheme}>
-      <div className="mx-auto max-w-3xl">
+      <div className={block.narrow ? 'gnm-prose-narrow' : 'mx-auto max-w-3xl'}>
         <Eyebrow>{block.eyebrow}</Eyebrow>
-        {block.heading ? (
-          <h1 className="mb-8 text-7xl text-[var(--gnm-heading)] md:text-10xl">{block.heading}</h1>
-        ) : null}
+        {block.heading ? <h1 className="gnm-h1 mb-8">{block.heading}</h1> : null}
         {block.content ? (
-          <RichText data={block.content} className="prose prose-lg max-w-none" />
+          <RichText data={block.content} className="gnm-prose max-w-none" />
         ) : null}
       </div>
     </Section>
@@ -251,14 +343,14 @@ function RichContent({ block }: { block: Extract<LayoutBlock, { blockType: 'rich
 
 function LogoStrip({ block }: { block: Extract<LayoutBlock, { blockType: 'logoStrip' }> }) {
   return (
-    <Section scheme={block.scheme} className="!py-12 md:!py-16">
+    <Section scheme={block.scheme} density="medium">
       <Eyebrow>{block.eyebrow}</Eyebrow>
-      {block.heading ? <h2 className="text-4xl text-[var(--gnm-heading)]">{block.heading}</h2> : null}
+      {block.heading ? <h2 className="gnm-h4 mt-3">{block.heading}</h2> : null}
       <ul className="mt-8 flex flex-wrap items-center gap-x-10 gap-y-6">
         {block.logos?.map((logo) => {
           const image = mediaUrl(logo.logo)
           return (
-            <li key={logo.id || logo.name} className="text-lg font-semibold tracking-[-0.03em] text-[var(--gnm-heading)]">
+            <li key={logo.id || logo.name} className="gnm-h5">
               {image ? (
                 <Image src={image.url} alt={logo.name || image.alt} width={240} height={80} className="h-10 w-auto" />
               ) : (
@@ -277,30 +369,30 @@ function TwoColumn({ block }: { block: Extract<LayoutBlock, { blockType: 'twoCol
   const reversed = block.imagePosition === 'left'
   return (
     <Section scheme={block.scheme}>
-      <div className={`grid items-center gap-12 lg:grid-cols-2 ${reversed ? 'lg:[&>*:first-child]:order-2' : ''}`}>
+      <div className={`grid items-center gap-12 lg:grid-cols-2 lg:gap-20 ${reversed ? 'lg:[&>*:first-child]:order-2' : ''}`}>
         <div>
-          <Eyebrow>{block.eyebrow}</Eyebrow>
-          <h2 className="text-6xl text-[var(--gnm-heading)] md:text-8xl">{block.heading}</h2>
-          {block.body ? <p className="mt-5 text-[var(--gnm-muted)]">{block.body}</p> : null}
-          <SchemeButtons
-            scheme={block.scheme}
-            primaryLabel={block.primaryLabel}
-            primaryHref={block.primaryHref}
-            secondaryLabel={block.secondaryLabel}
-            secondaryHref={block.secondaryHref}
-          />
+          <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} />
+          <div className="mt-9">
+            <SchemeButtons
+              scheme={block.scheme}
+              primaryLabel={block.primaryLabel}
+              primaryHref={block.primaryHref}
+              secondaryLabel={block.secondaryLabel}
+              secondaryHref={block.secondaryHref}
+            />
+          </div>
         </div>
-        <div className="min-h-64 bg-[var(--gnm-accent)]/10">
+        <div className="min-h-64 overflow-hidden rounded-[20px] bg-[var(--gnm-accent-subtle)]">
           {image ? (
             <Image
               src={image.url}
               alt={block.imageAlt || image.alt}
               width={1200}
-              height={900}
+              height={800}
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex h-full min-h-64 items-center justify-center p-8 text-sm text-[var(--gnm-muted)]">
+            <div className="flex h-full min-h-64 items-center justify-center p-8 text-sm">
               Add an image in the admin to fill this column.
             </div>
           )}

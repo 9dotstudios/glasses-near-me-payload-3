@@ -32,6 +32,29 @@ export const Hero: Block = {
     heading,
     body,
     { name: 'fullHeight', type: 'checkbox', defaultValue: false },
+    {
+      name: 'imageUrl',
+      type: 'text',
+      admin: { description: 'Optional full-bleed photo. A 40% ink overlay is applied on top.' },
+    },
+    {
+      name: 'align',
+      type: 'select',
+      defaultValue: 'start',
+      options: [
+        { label: 'Left', value: 'start' },
+        { label: 'Center', value: 'center' },
+      ],
+    },
+    {
+      name: 'frame',
+      type: 'select',
+      defaultValue: 'none',
+      options: [
+        { label: 'Open', value: 'none' },
+        { label: 'Centered card', value: 'card' },
+      ],
+    },
     ...linkFields('primary'),
     ...linkFields('secondary'),
   ],
@@ -78,6 +101,15 @@ export const FeatureGrid: Block = {
       ],
     },
     {
+      name: 'variant',
+      type: 'select',
+      defaultValue: 'icons',
+      options: [
+        { label: 'Icons', value: 'icons' },
+        { label: 'Landscape photos', value: 'media' },
+      ],
+    },
+    {
       name: 'items',
       type: 'array',
       fields: [
@@ -86,6 +118,7 @@ export const FeatureGrid: Block = {
           type: 'text',
           admin: { description: 'Material Symbols name, for example star or call.' },
         },
+        { name: 'imageUrl', type: 'text' },
         { name: 'title', type: 'text', required: true },
         { name: 'description', type: 'textarea' },
         { name: 'linkLabel', type: 'text' },
@@ -125,6 +158,7 @@ export const Stats: Block = {
     eyebrow,
     heading,
     body,
+    { name: 'centered', type: 'checkbox', defaultValue: false },
     {
       name: 'items',
       type: 'array',
@@ -149,10 +183,20 @@ export const ContentFeed: Block = {
     { name: 'linkLabel', type: 'text' },
     { name: 'linkHref', type: 'text' },
     {
+      name: 'variant',
+      type: 'select',
+      defaultValue: 'media',
+      options: [
+        { label: 'Photo cards', value: 'media' },
+        { label: 'Text cards', value: 'text' },
+      ],
+    },
+    {
       name: 'items',
       type: 'array',
       fields: [
         { name: 'tag', type: 'text' },
+        { name: 'imageUrl', type: 'text' },
         { name: 'title', type: 'text', required: true },
         { name: 'excerpt', type: 'textarea' },
         { name: 'href', type: 'text' },
@@ -185,7 +229,15 @@ export const CTA: Block = {
   slug: 'cta',
   interfaceName: 'CtaBlock',
   labels: { singular: 'CTA', plural: 'CTAs' },
-  fields: [schemeField, eyebrow, heading, body, ...linkFields('primary'), ...linkFields('secondary')],
+  fields: [
+    schemeField,
+    eyebrow,
+    heading,
+    body,
+    { name: 'card', type: 'checkbox', defaultValue: false },
+    ...linkFields('primary'),
+    ...linkFields('secondary'),
+  ],
 }
 
 export const RichContent: Block = {
@@ -196,6 +248,7 @@ export const RichContent: Block = {
     schemeField,
     eyebrow,
     { name: 'heading', type: 'text' },
+    { name: 'narrow', type: 'checkbox', defaultValue: false },
     { name: 'content', type: 'richText' },
   ],
 }

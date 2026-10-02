@@ -208,6 +208,12 @@ export interface HeroBlock {
   heading: string;
   body?: string | null;
   fullHeight?: boolean | null;
+  /**
+   * Optional full-bleed photo. A 40% ink overlay is applied on top.
+   */
+  imageUrl?: string | null;
+  align?: ('start' | 'center') | null;
+  frame?: ('none' | 'card') | null;
   primaryLabel?: string | null;
   primaryHref?: string | null;
   secondaryLabel?: string | null;
@@ -244,12 +250,14 @@ export interface FeatureGridBlock {
   heading: string;
   body?: string | null;
   columns?: ('2' | '3' | '4') | null;
+  variant?: ('icons' | 'media') | null;
   items?:
     | {
         /**
          * Material Symbols name, for example star or call.
          */
         icon?: string | null;
+        imageUrl?: string | null;
         title: string;
         description?: string | null;
         linkLabel?: string | null;
@@ -291,6 +299,7 @@ export interface StatsBlock {
   eyebrow?: string | null;
   heading: string;
   body?: string | null;
+  centered?: boolean | null;
   items?:
     | {
         value: string;
@@ -314,9 +323,11 @@ export interface ContentFeedBlock {
   body?: string | null;
   linkLabel?: string | null;
   linkHref?: string | null;
+  variant?: ('media' | 'text') | null;
   items?:
     | {
         tag?: string | null;
+        imageUrl?: string | null;
         title: string;
         excerpt?: string | null;
         href?: string | null;
@@ -356,6 +367,7 @@ export interface CtaBlock {
   eyebrow?: string | null;
   heading: string;
   body?: string | null;
+  card?: boolean | null;
   primaryLabel?: string | null;
   primaryHref?: string | null;
   secondaryLabel?: string | null;
@@ -372,6 +384,7 @@ export interface RichContentBlock {
   scheme?: ('scheme-1' | 'scheme-2' | 'scheme-3' | 'scheme-4' | 'scheme-5') | null;
   eyebrow?: string | null;
   heading?: string | null;
+  narrow?: boolean | null;
   content?: {
     root: {
       type: string;
@@ -589,6 +602,9 @@ export interface HeroBlockSelect<T extends boolean = true> {
   heading?: T;
   body?: T;
   fullHeight?: T;
+  imageUrl?: T;
+  align?: T;
+  frame?: T;
   primaryLabel?: T;
   primaryHref?: T;
   secondaryLabel?: T;
@@ -620,10 +636,12 @@ export interface FeatureGridBlockSelect<T extends boolean = true> {
   heading?: T;
   body?: T;
   columns?: T;
+  variant?: T;
   items?:
     | T
     | {
         icon?: T;
+        imageUrl?: T;
         title?: T;
         description?: T;
         linkLabel?: T;
@@ -662,6 +680,7 @@ export interface StatsBlockSelect<T extends boolean = true> {
   eyebrow?: T;
   heading?: T;
   body?: T;
+  centered?: T;
   items?:
     | T
     | {
@@ -684,10 +703,12 @@ export interface ContentFeedBlockSelect<T extends boolean = true> {
   body?: T;
   linkLabel?: T;
   linkHref?: T;
+  variant?: T;
   items?:
     | T
     | {
         tag?: T;
+        imageUrl?: T;
         title?: T;
         excerpt?: T;
         href?: T;
@@ -724,6 +745,7 @@ export interface CtaBlockSelect<T extends boolean = true> {
   eyebrow?: T;
   heading?: T;
   body?: T;
+  card?: T;
   primaryLabel?: T;
   primaryHref?: T;
   secondaryLabel?: T;
@@ -739,6 +761,7 @@ export interface RichContentBlockSelect<T extends boolean = true> {
   scheme?: T;
   eyebrow?: T;
   heading?: T;
+  narrow?: T;
   content?: T;
   id?: T;
   blockName?: T;

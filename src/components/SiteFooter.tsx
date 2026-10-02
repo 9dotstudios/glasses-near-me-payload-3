@@ -38,22 +38,16 @@ const columns = [
 
 export function SiteFooter() {
   return (
-    <footer className="gnm-scheme gnm-scheme-2 bg-[#080706] px-[5%] py-16 text-white md:py-20">
-      <div className="container">
-        <div className="grid gap-12 lg:grid-cols-[1.1fr_2fr] lg:gap-16">
-          <Link href="/" aria-label="Glasses Near Me home">
-            <Image
-              src="/brand/logo-light.png"
-              alt="Glasses Near Me"
-              width={600}
-              height={120}
-              className="h-10 w-auto"
-            />
+    <footer className="gnm-footer gnm-scheme-2">
+      <div className="gnm-container flex flex-col gap-12">
+        <div className="grid gap-12 lg:grid-cols-[1fr_2fr_1fr] lg:gap-12">
+          <Link href="/" aria-label="Home">
+            <Image src="/brand/logo-light.png" alt="Glasses Near Me" width={600} height={120} className="h-10 w-auto" />
           </Link>
-          <div className="grid gap-10 sm:grid-cols-3">
+          <div className="grid gap-10 sm:grid-cols-3 lg:max-w-[40rem] lg:justify-self-end">
             {columns.map((column) => (
-              <div key={column.title}>
-                <p className="mb-4 font-semibold">{column.title}</p>
+              <div key={column.title} className="flex flex-col gap-6">
+                <p className="font-medium text-white">{column.title}</p>
                 <ul className="flex flex-col gap-3">
                   {column.links.map((link) => (
                     <li key={link.href}>
@@ -67,20 +61,18 @@ export function SiteFooter() {
             ))}
           </div>
         </div>
-        <div className="mt-12 border-t border-white/15 pt-6">
-          <div className="flex flex-col gap-4 text-sm text-white/80 md:flex-row md:items-center md:justify-between">
-            <p>Glasses Near Me. All rights reserved.</p>
-            <div className="flex flex-wrap gap-5">
-              <Link href="/about" className="underline">
-                About
-              </Link>
-              <Link href="/privacy-policy" className="underline">
-                Privacy policy
-              </Link>
-              <Link href="/terms-of-use" className="underline">
-                Terms of use
-              </Link>
-            </div>
+        <div className="flex flex-col gap-6 border-t border-white/20 pt-6 md:flex-row md:items-center md:justify-between">
+          <p className="text-sm text-white">Glasses Near Me. All rights reserved.</p>
+          <div className="flex flex-wrap gap-6 text-sm">
+            <Link href="/about" className="underline">
+              About
+            </Link>
+            <Link href="/privacy-policy" className="underline">
+              Privacy policy
+            </Link>
+            <Link href="/terms-of-use" className="underline">
+              Terms of use
+            </Link>
           </div>
         </div>
       </div>
