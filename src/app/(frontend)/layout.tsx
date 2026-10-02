@@ -1,3 +1,4 @@
+import type { Viewport } from 'next'
 import { Fraunces, Inter } from 'next/font/google'
 import React from 'react'
 
@@ -19,6 +20,10 @@ const fraunces = Fraunces({
   variable: '--font-fraunces',
   display: 'swap',
 })
+
+export const viewport: Viewport = {
+  themeColor: '#F5F5F5',
+}
 
 export const metadata = {
   description:
@@ -42,7 +47,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
       </head>
       <body className="gnm-site">
         <SiteHeader />
-        {children}
+        <main id="main-content">{children}</main>
         <SiteFooter />
       </body>
     </html>

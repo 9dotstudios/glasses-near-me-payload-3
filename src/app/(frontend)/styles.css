@@ -15,7 +15,9 @@
   --color-accent: #0d9769;
   --color-mist: #eaf9f4;
   --color-mist-deep: #cef1e5;
-  --font-family-heading: var(--font-fraunces), 'Iowan Old Style', Palatino, serif;
+  --font-family-heading:
+    var(--font-fraunces), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    sans-serif;
   --font-family-body: var(--font-inter), Inter, system-ui, sans-serif;
   --heading-weight: 400;
   --heading-letter-spacing: -0.01em;
@@ -205,6 +207,110 @@
   --gnm-line: rgba(255, 255, 255, 0.2);
 }
 
+/* Defaults = scheme-1 / light. Schemes 2–3 and photo/nav chrome flip to white pills. */
+:root,
+.gnm-scheme-1,
+.gnm-scheme-4,
+.gnm-scheme-5 {
+  --button-fill: var(--color-stone);
+  --button-text: #ffffff;
+  --button-border: transparent;
+  --button-border-width: 1px;
+  --button-secondary-fill: transparent;
+  --button-secondary-text: var(--color-stone);
+  --button-secondary-border: rgba(28, 25, 23, 0.2);
+  --button-padding-vertical: 0.75rem;
+  --button-padding-horizontal: 1.25rem;
+  --button-small-padding-vertical: 0.5rem;
+  --button-small-padding-horizontal: 1rem;
+}
+
+.gnm-scheme-2,
+.gnm-scheme-3,
+.gnm-on-photo {
+  --button-fill: #ffffff;
+  --button-text: var(--color-ink);
+  --button-border: transparent;
+  --button-secondary-fill: transparent;
+  --button-secondary-text: #ffffff;
+  --button-secondary-border: rgba(255, 255, 255, 0.2);
+}
+
+.gnm-nav {
+  --button-fill: #ffffff;
+  --button-text: var(--color-ink);
+  --button-border: transparent;
+  --button-secondary-fill: transparent;
+  --button-secondary-text: #ffffff;
+  --button-secondary-border: rgba(255, 255, 255, 0.2);
+}
+
+.gnm-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  gap: 0.5rem;
+  border-radius: var(--button-radius);
+  border-style: solid;
+  border-width: var(--button-border-width, 1px);
+  border-color: var(--button-border, transparent);
+  background: var(--button-fill);
+  color: var(--button-text);
+  padding: var(--button-padding-vertical) var(--button-padding-horizontal);
+  font-family: var(--font-family-body);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.5;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  appearance: none;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.gnm-btn:hover {
+  filter: brightness(0.97);
+  text-decoration: none;
+}
+
+.gnm-btn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.gnm-btn .material-symbols-rounded {
+  font-size: 1.25rem;
+}
+
+.gnm-btn-secondary {
+  background: var(--button-secondary-fill);
+  color: var(--button-secondary-text);
+  border-color: var(--button-secondary-border);
+}
+
+.gnm-btn-secondary:hover {
+  background: color-mix(in srgb, var(--button-secondary-text) 5%, transparent);
+  filter: none;
+}
+
+.gnm-btn-small {
+  padding: var(--button-small-padding-vertical) var(--button-small-padding-horizontal);
+}
+
+.gnm-on-photo .gnm-btn-secondary:hover,
+.gnm-scheme-2 .gnm-btn-secondary:hover,
+.gnm-scheme-3 .gnm-btn-secondary:hover,
+.gnm-nav .gnm-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .gnm-section {
   position: relative;
   overflow: hidden;
@@ -216,6 +322,11 @@
 
 .gnm-section-medium {
   padding: var(--section-padding-medium) var(--page-padding);
+}
+
+.gnm-section-card {
+  display: flex;
+  align-items: center;
 }
 
 .gnm-section-hero {
@@ -319,7 +430,7 @@
 .gnm-media {
   width: 100%;
   object-fit: cover;
-  border-radius: var(--radius-medium);
+  border-radius: var(--radius-large);
 }
 
 .gnm-media-land {
@@ -350,6 +461,7 @@
 }
 
 .gnm-field {
+  box-sizing: border-box;
   width: 100%;
   border-radius: var(--button-radius) !important;
   border: 1px solid rgba(8, 7, 6, 0.2) !important;
@@ -407,14 +519,34 @@
 }
 
 .gnm-nav {
-  position: relative;
-  z-index: 30;
+  position: sticky;
+  top: 0;
+  z-index: 40;
   display: flex;
   align-items: center;
   min-height: 4.5rem;
   padding-inline: var(--page-padding);
   background: #074f37;
   color: #fff;
+}
+
+.gnm-search {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 36rem;
+  min-width: 0;
+}
+
+.gnm-search .gnm-field {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+}
+
+.gnm-search .gnm-btn {
+  flex: none;
 }
 
 .gnm-nav-link {

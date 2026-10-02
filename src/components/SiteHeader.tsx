@@ -1,7 +1,6 @@
 'use client'
 
 import {
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -10,6 +9,8 @@ import {
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
+
+import { ADD_SHOP_PATH } from '@/lib/routes'
 
 const countries = [
   {
@@ -39,7 +40,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="gnm-nav relative">
+    <header className="gnm-nav">
       <div className="flex w-full items-center justify-between gap-6">
         <Link href="/" aria-label="Home" className="relative z-[2] shrink-0">
           <Image
@@ -58,10 +59,16 @@ export function SiteHeader() {
               Find a shop
               <span className="material-symbols-rounded text-xl">keyboard_arrow_down</span>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="min-w-72 rounded-2xl bg-white p-2 text-[#080706]">
+            <DropdownMenuContent
+              align="start"
+              className="min-w-72 rounded-2xl bg-white p-2 text-[#080706]"
+            >
               {countries.map((country) => (
                 <DropdownMenuItem key={country.href} asChild>
-                  <Link href={country.href} className="flex flex-col items-start gap-0.5 rounded-xl px-3 py-2">
+                  <Link
+                    href={country.href}
+                    className="flex flex-col items-start gap-0.5 rounded-xl px-3 py-2"
+                  >
                     <span className="font-medium">{country.title}</span>
                     <span className="text-sm text-black/60">{country.detail}</span>
                   </Link>
@@ -74,13 +81,9 @@ export function SiteHeader() {
               {link.label}
             </Link>
           ))}
-          <Button
-            asChild
-            size="sm"
-            className="gnm-nav-cta !border-transparent !bg-white !px-4 !py-2 !text-base !text-[#080706] hover:!bg-white/90"
-          >
-            <Link href="/add">Add your shop</Link>
-          </Button>
+          <Link href={ADD_SHOP_PATH} className="gnm-btn gnm-btn-small gnm-nav-cta">
+            Add your shop
+          </Link>
         </nav>
 
         <button
@@ -104,23 +107,37 @@ export function SiteHeader() {
           <p className="mb-2 text-sm text-white/70">Find a shop</p>
           <div className="mb-4 flex flex-col gap-2">
             {countries.map((country) => (
-              <Link key={country.href} href={country.href} onClick={() => setOpen(false)} className="font-medium">
+              <Link
+                key={country.href}
+                href={country.href}
+                onClick={() => setOpen(false)}
+                className="font-medium"
+              >
                 {country.title}
-                <span className="mt-0.5 block text-sm font-normal text-white/70">{country.detail}</span>
+                <span className="mt-0.5 block text-sm font-normal text-white/70">
+                  {country.detail}
+                </span>
               </Link>
             ))}
           </div>
           <div className="flex flex-col gap-1">
             {links.map((link) => (
-              <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="gnm-nav-link px-0">
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className="gnm-nav-link px-0"
+              >
                 {link.label}
               </Link>
             ))}
-            <Button asChild size="sm" className="gnm-nav-cta !mt-3 !border-transparent !bg-white !text-[#080706]">
-              <Link href="/add" onClick={() => setOpen(false)}>
-                Add your shop
-              </Link>
-            </Button>
+            <Link
+              href={ADD_SHOP_PATH}
+              onClick={() => setOpen(false)}
+              className="gnm-btn gnm-btn-small gnm-nav-cta mt-3"
+            >
+              Add your shop
+            </Link>
           </div>
         </nav>
       ) : null}
