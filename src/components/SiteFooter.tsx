@@ -2,6 +2,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
+import { ADD_SHOP_PATH } from '@/lib/routes'
+
 const columns = [
   {
     title: 'Directory',
@@ -24,13 +26,16 @@ const columns = [
         href: '/guides/how-to-read-your-glasses-prescription',
         label: 'How to read your glasses prescription',
       },
-      { href: '/guides/are-blue-light-glasses-worth-it', label: 'Are blue light glasses worth it?' },
+      {
+        href: '/guides/are-blue-light-glasses-worth-it',
+        label: 'Are blue light glasses worth it?',
+      },
     ],
   },
   {
     title: 'For opticians',
     links: [
-      { href: '/add', label: 'Add your shop' },
+      { href: ADD_SHOP_PATH, label: 'Add your shop' },
       { href: '/for-opticians/claim-or-correct-a-listing', label: 'Claim or correct a listing' },
     ],
   },
@@ -42,7 +47,13 @@ export function SiteFooter() {
       <div className="gnm-container flex flex-col gap-12">
         <div className="grid gap-12 lg:grid-cols-[1fr_2fr_1fr] lg:gap-12">
           <Link href="/" aria-label="Home">
-            <Image src="/brand/logo-light.png" alt="Glasses Near Me" width={600} height={120} className="h-10 w-auto" />
+            <Image
+              src="/brand/logo-light.png"
+              alt="Glasses Near Me"
+              width={600}
+              height={120}
+              className="h-10 w-auto"
+            />
           </Link>
           <div className="grid gap-10 sm:grid-cols-3 lg:max-w-[40rem] lg:justify-self-end">
             {columns.map((column) => (
@@ -64,13 +75,13 @@ export function SiteFooter() {
         <div className="flex flex-col gap-6 border-t border-white/20 pt-6 md:flex-row md:items-center md:justify-between">
           <p className="text-sm text-white">Glasses Near Me. All rights reserved.</p>
           <div className="flex flex-wrap gap-6 text-sm">
-            <Link href="/about" className="underline">
+            <Link href="/about" className="text-white/80 hover:text-white">
               About
             </Link>
-            <Link href="/privacy-policy" className="underline">
+            <Link href="/privacy-policy" className="text-white/80 hover:text-white">
               Privacy policy
             </Link>
-            <Link href="/terms-of-use" className="underline">
+            <Link href="/terms-of-use" className="text-white/80 hover:text-white">
               Terms of use
             </Link>
           </div>

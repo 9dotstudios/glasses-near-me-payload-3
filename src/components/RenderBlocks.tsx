@@ -1,4 +1,4 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Button, Input } from '@relume_io/relume-ui'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@relume_io/relume-ui'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -40,7 +40,9 @@ function Intro({
     <div className={`gnm-intro ${align === 'center' ? 'gnm-intro-center' : ''}`}>
       <div className="gnm-intro-title">
         <Eyebrow>{eyebrow}</Eyebrow>
-        {heading ? <Heading className={as === 'h1' ? 'gnm-h1' : 'gnm-h2'}>{heading}</Heading> : null}
+        {heading ? (
+          <Heading className={as === 'h1' ? 'gnm-h1' : 'gnm-h2'}>{heading}</Heading>
+        ) : null}
       </div>
       {body ? <p className="gnm-body">{body}</p> : null}
     </div>
@@ -56,11 +58,18 @@ function Hero({ block }: { block: Extract<LayoutBlock, { blockType: 'hero' }> })
   if (framed) {
     return (
       <Section scheme={block.scheme} density="medium">
-        <div className={`gnm-card gnm-card-pad ${scheme === 'scheme-5' ? 'gnm-card-mint' : 'gnm-card-paper'}`}>
+        <div
+          className={`gnm-card gnm-card-pad ${scheme === 'scheme-5' ? 'gnm-card-mint' : 'gnm-card-paper'}`}
+        >
           <div className="gnm-center flex flex-col items-center gap-9">
-            <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} as="h1" align="center" />
+            <Intro
+              eyebrow={block.eyebrow}
+              heading={block.heading}
+              body={block.body}
+              as="h1"
+              align="center"
+            />
             <SchemeButtons
-              scheme="scheme-4"
               align="center"
               primaryLabel={block.primaryLabel}
               primaryHref={block.primaryHref}
@@ -86,11 +95,16 @@ function Hero({ block }: { block: Extract<LayoutBlock, { blockType: 'hero' }> })
         </>
       ) : null}
       <div className={`relative z-[1] ${align === 'center' ? 'gnm-center' : ''}`}>
-        <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} as="h1" align={align} />
+        <Intro
+          eyebrow={block.eyebrow}
+          heading={block.heading}
+          body={block.body}
+          as="h1"
+          align={align}
+        />
         {block.primaryLabel || block.secondaryLabel ? (
           <div className="mt-9">
             <SchemeButtons
-              scheme={photo ? 'scheme-2' : block.scheme}
               align={align}
               primaryArrow={photo}
               primaryLabel={block.primaryLabel}
@@ -111,20 +125,32 @@ function SearchPrompt({ block }: { block: Extract<LayoutBlock, { blockType: 'sea
     <Section scheme={block.scheme}>
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
         <Intro heading={block.heading} body={block.body} />
-        <form action={block.href || '/find-a-shop'} method="get" className="w-full max-w-[36rem]" role="search">
+        <form
+          action={block.href || '/find-a-shop'}
+          method="get"
+          className="gnm-search"
+          role="search"
+        >
           <label className="sr-only" htmlFor="gnm-search">
             Search towns and shops
           </label>
-          <Input
+          <input
             id="gnm-search"
             name="q"
+            type="text"
             placeholder={block.placeholder || 'Town or shop name'}
-            className={dark ? 'gnm-field !border-white/20 !bg-white/10 !text-white placeholder:!text-white/60' : 'gnm-field'}
+            className={
+              dark
+                ? 'gnm-field !border-white/20 !bg-white/10 !text-white placeholder:!text-white/60'
+                : 'gnm-field'
+            }
           />
-          <Button type="submit" className={`mt-3 !rounded-[16px] !px-5 !py-3 ${dark ? '!border-transparent !bg-white !text-[#080706]' : '!border-[#1c1917] !bg-[#1c1917] !text-white'}`}>
-            <span className="material-symbols-rounded text-xl">search</span>
+          <button type="submit" className="gnm-btn">
+            <span className="material-symbols-rounded" aria-hidden="true">
+              search
+            </span>
             {block.buttonLabel || 'Search'}
-          </Button>
+          </button>
         </form>
       </div>
     </Section>
@@ -134,12 +160,13 @@ function SearchPrompt({ block }: { block: Extract<LayoutBlock, { blockType: 'sea
 function FeatureGrid({ block }: { block: Extract<LayoutBlock, { blockType: 'featureGrid' }> }) {
   const columns = columnClass[block.columns || '4'] || columnClass['4']
   const media = block.variant === 'media'
-  const dark = isDarkScheme(block.scheme)
   return (
     <Section scheme={block.scheme}>
       <div className="gnm-block">
         <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} />
-        <div className={`grid grid-cols-1 gap-y-16 ${media ? 'gap-x-12' : 'gap-x-8'} max-lg:gap-y-12 ${block.columns === '4' ? 'sm:grid-cols-2' : ''} ${columns}`}>
+        <div
+          className={`grid grid-cols-1 gap-y-16 ${media ? 'gap-x-12' : 'gap-x-8'} max-lg:gap-y-12 ${block.columns === '4' ? 'sm:grid-cols-2' : ''} ${columns}`}
+        >
           {block.items?.map((item) => (
             <article key={item.id || item.title} className="flex flex-col gap-6">
               {media && item.imageUrl ? (
@@ -150,19 +177,20 @@ function FeatureGrid({ block }: { block: Extract<LayoutBlock, { blockType: 'feat
               )}
               <div className="flex flex-col gap-6">
                 <h3 className="gnm-h4">{item.title}</h3>
-                {item.description ? <p className="gnm-body max-w-none">{item.description}</p> : null}
+                {item.description ? (
+                  <p className="gnm-body max-w-none">{item.description}</p>
+                ) : null}
               </div>
               {item.linkLabel && item.linkHref ? (
                 media ? (
-                  <Button
-                    asChild
-                    variant="secondary"
-                    className={`mt-auto w-fit !rounded-[16px] !px-5 !py-3 !text-base ${dark ? '!border-white/20 !bg-transparent !text-white' : '!border-[rgba(28,25,23,0.2)] !bg-transparent !text-[#1c1917]'}`}
-                  >
-                    <Link href={item.linkHref}>{item.linkLabel}</Link>
-                  </Button>
+                  <Link href={item.linkHref} className="gnm-btn gnm-btn-secondary mt-auto">
+                    {item.linkLabel}
+                  </Link>
                 ) : (
-                  <Link href={item.linkHref} className="mt-auto inline-flex items-center gap-2 font-medium">
+                  <Link
+                    href={item.linkHref}
+                    className="mt-auto inline-flex items-center gap-2 font-medium"
+                  >
                     {item.linkLabel}
                     <span className="material-symbols-rounded text-xl">arrow_forward</span>
                   </Link>
@@ -190,7 +218,9 @@ function Process({ block }: { block: Extract<LayoutBlock, { blockType: 'process'
               </div>
               <div className="flex flex-col gap-6">
                 <h3 className="gnm-h5">{step.title}</h3>
-                {step.description ? <p className="gnm-body max-w-none">{step.description}</p> : null}
+                {step.description ? (
+                  <p className="gnm-body max-w-none">{step.description}</p>
+                ) : null}
               </div>
             </li>
           ))}
@@ -207,13 +237,20 @@ function Stats({ block }: { block: Extract<LayoutBlock, { blockType: 'stats' }> 
   return (
     <Section scheme={block.scheme}>
       <div className="gnm-block">
-        <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} align={centered ? 'center' : 'start'} />
+        <Intro
+          eyebrow={block.eyebrow}
+          heading={block.heading}
+          body={block.body}
+          align={centered ? 'center' : 'start'}
+        />
         <div className={`grid gap-10 ${cols} ${centered ? 'text-center' : ''}`}>
           {block.items?.map((item) => (
             <article key={item.id || item.title} className={centered ? 'gnm-stat' : ''}>
               <p className="gnm-h2 max-w-none">{item.value}</p>
               <h3 className="gnm-h6 mt-6">{item.title}</h3>
-              {item.description ? <p className="gnm-body mx-auto mt-3 max-w-none text-base">{item.description}</p> : null}
+              {item.description ? (
+                <p className="gnm-body mx-auto mt-3 max-w-none text-base">{item.description}</p>
+              ) : null}
             </article>
           ))}
         </div>
@@ -230,21 +267,25 @@ function ContentFeed({ block }: { block: Extract<LayoutBlock, { blockType: 'cont
         <div className="grid items-end gap-8 lg:grid-cols-[1fr_auto] lg:gap-20">
           <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} />
           {block.linkLabel && block.linkHref ? (
-            <Button
-              asChild
-              variant="secondary"
-              className="w-fit !rounded-[16px] !border-[rgba(28,25,23,0.2)] !bg-transparent !px-5 !py-3 !text-base !text-[#1c1917]"
-            >
-              <Link href={block.linkHref}>{block.linkLabel}</Link>
-            </Button>
+            <Link href={block.linkHref} className="gnm-btn gnm-btn-secondary">
+              {block.linkLabel}
+            </Link>
           ) : null}
         </div>
-        <div className={`grid gap-8 md:grid-cols-2 lg:grid-cols-3 ${textCards ? 'gap-4' : 'lg:gap-12'}`}>
+        <div
+          className={`grid gap-8 md:grid-cols-2 lg:grid-cols-3 ${textCards ? 'gap-4' : 'lg:gap-12'}`}
+        >
           {block.items?.map((item) =>
             textCards ? (
-              <Link key={item.id || item.title} href={item.href || '/guides'} className="gnm-library-card">
+              <Link
+                key={item.id || item.title}
+                href={item.href || '/guides'}
+                className="gnm-library-card"
+              >
                 <h3>{item.title}</h3>
-                {item.excerpt ? <p className="mt-1 text-sm text-stone-500">{item.excerpt}</p> : null}
+                {item.excerpt ? (
+                  <p className="mt-1 text-sm text-stone-500">{item.excerpt}</p>
+                ) : null}
               </Link>
             ) : (
               <article key={item.id || item.title} className="flex flex-col gap-6">
@@ -279,11 +320,17 @@ function Faq({ block }: { block: Extract<LayoutBlock, { blockType: 'faq' }> }) {
         <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} />
         <Accordion type="single" collapsible className="border-t border-[var(--gnm-line)]">
           {block.items?.map((item, index) => (
-            <AccordionItem key={item.id || item.question} value={item.id || String(index)} className="border-b border-[var(--gnm-line)]">
+            <AccordionItem
+              key={item.id || item.question}
+              value={item.id || String(index)}
+              className="border-b border-[var(--gnm-line)]"
+            >
               <AccordionTrigger className="py-5 text-left text-lg font-medium text-[var(--gnm-heading)]">
                 {item.question}
               </AccordionTrigger>
-              <AccordionContent className="pb-5 text-base text-[var(--gnm-text)]">{item.answer}</AccordionContent>
+              <AccordionContent className="pb-5 text-base text-[var(--gnm-text)]">
+                {item.answer}
+              </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
@@ -303,7 +350,6 @@ function Cta({ block }: { block: Extract<LayoutBlock, { blockType: 'cta' }> }) {
       />
       <div className={block.body || block.eyebrow ? 'mt-9' : ''}>
         <SchemeButtons
-          scheme={block.card && block.scheme === 'scheme-5' ? 'scheme-4' : block.scheme}
           align={block.card ? 'center' : 'start'}
           primaryLabel={block.primaryLabel}
           primaryHref={block.primaryHref}
@@ -316,8 +362,10 @@ function Cta({ block }: { block: Extract<LayoutBlock, { blockType: 'cta' }> }) {
 
   if (block.card) {
     return (
-      <Section scheme={block.scheme} density="medium">
-        <div className={`gnm-card gnm-card-pad ${block.scheme === 'scheme-5' ? 'gnm-card-mint' : 'gnm-card-paper'}`}>
+      <Section scheme={block.scheme} density="medium" className="gnm-section-card">
+        <div
+          className={`gnm-card gnm-card-pad ${block.scheme === 'scheme-5' ? 'gnm-card-mint' : 'gnm-card-paper'}`}
+        >
           {content}
         </div>
       </Section>
@@ -333,9 +381,7 @@ function RichContent({ block }: { block: Extract<LayoutBlock, { blockType: 'rich
       <div className={block.narrow ? 'gnm-prose-narrow' : 'mx-auto max-w-3xl'}>
         <Eyebrow>{block.eyebrow}</Eyebrow>
         {block.heading ? <h1 className="gnm-h1 mb-8">{block.heading}</h1> : null}
-        {block.content ? (
-          <RichText data={block.content} className="gnm-prose max-w-none" />
-        ) : null}
+        {block.content ? <RichText data={block.content} className="gnm-prose max-w-none" /> : null}
       </div>
     </Section>
   )
@@ -352,7 +398,13 @@ function LogoStrip({ block }: { block: Extract<LayoutBlock, { blockType: 'logoSt
           return (
             <li key={logo.id || logo.name} className="gnm-h5">
               {image ? (
-                <Image src={image.url} alt={logo.name || image.alt} width={240} height={80} className="h-10 w-auto" />
+                <Image
+                  src={image.url}
+                  alt={logo.name || image.alt}
+                  width={240}
+                  height={80}
+                  className="h-10 w-auto"
+                />
               ) : (
                 logo.name
               )}
@@ -369,12 +421,13 @@ function TwoColumn({ block }: { block: Extract<LayoutBlock, { blockType: 'twoCol
   const reversed = block.imagePosition === 'left'
   return (
     <Section scheme={block.scheme}>
-      <div className={`grid items-center gap-12 lg:grid-cols-2 lg:gap-20 ${reversed ? 'lg:[&>*:first-child]:order-2' : ''}`}>
+      <div
+        className={`grid items-center gap-12 lg:grid-cols-2 lg:gap-20 ${reversed ? 'lg:[&>*:first-child]:order-2' : ''}`}
+      >
         <div>
           <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} />
           <div className="mt-9">
             <SchemeButtons
-              scheme={block.scheme}
               primaryLabel={block.primaryLabel}
               primaryHref={block.primaryHref}
               secondaryLabel={block.secondaryLabel}
@@ -403,7 +456,9 @@ function TwoColumn({ block }: { block: Extract<LayoutBlock, { blockType: 'twoCol
 }
 
 const renderers: {
-  [K in LayoutBlock['blockType']]: (block: Extract<LayoutBlock, { blockType: K }>) => React.ReactNode
+  [K in LayoutBlock['blockType']]: (
+    block: Extract<LayoutBlock, { blockType: K }>,
+  ) => React.ReactNode
 } = {
   hero: (block) => <Hero block={block} />,
   searchPrompt: (block) => <SearchPrompt block={block} />,

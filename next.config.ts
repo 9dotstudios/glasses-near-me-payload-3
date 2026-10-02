@@ -2,6 +2,15 @@ import { withPayload } from '@payloadcms/next/withPayload'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/add',
+        destination: '/for-opticians/add-your-shop',
+        permanent: false,
+      },
+    ]
+  },
   images: {
     localPatterns: [
       {

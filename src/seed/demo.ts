@@ -1,5 +1,7 @@
 import type { Payload } from 'payload'
 
+import { ADD_SHOP_PATH, ADD_SHOP_SLUG } from '@/lib/routes'
+
 import { guideLibrary } from './guideLibrary'
 import { richText } from './richText'
 
@@ -233,7 +235,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
           primaryLabel: 'Claim or correct your listing',
           primaryHref: '/for-opticians/claim-or-correct-a-listing',
           secondaryLabel: 'Add your shop',
-          secondaryHref: '/add',
+          secondaryHref: ADD_SHOP_PATH,
         },
       ],
     },
@@ -362,7 +364,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
           primaryLabel: 'Claim or correct a listing',
           primaryHref: '/for-opticians/claim-or-correct-a-listing',
           secondaryLabel: 'Add a missing shop',
-          secondaryHref: '/add',
+          secondaryHref: ADD_SHOP_PATH,
         },
         {
           blockType: 'featureGrid',
@@ -412,7 +414,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
               description:
                 'If your shop is not in the directory, add it. It enters the same list as every other shop in that town.',
               linkLabel: 'Add your shop',
-              linkHref: '/add',
+              linkHref: ADD_SHOP_PATH,
             },
             {
               icon: 'edit',
@@ -471,7 +473,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
           primaryLabel: 'Claim or correct a listing',
           primaryHref: '/for-opticians/claim-or-correct-a-listing',
           secondaryLabel: 'Add your shop',
-          secondaryHref: '/add',
+          secondaryHref: ADD_SHOP_PATH,
         },
       ],
     },
@@ -552,7 +554,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
           heading: 'Add the shop first, then claim it',
           body: 'Claiming only works on a listing that already exists. If yours is missing, add it and get the details right from the start.',
           primaryLabel: 'Add your shop',
-          primaryHref: '/add',
+          primaryHref: ADD_SHOP_PATH,
         },
       ],
     },
@@ -788,7 +790,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
           primaryLabel: 'Claim or correct your listing',
           primaryHref: '/for-opticians/claim-or-correct-a-listing',
           secondaryLabel: 'Add your shop',
-          secondaryHref: '/add',
+          secondaryHref: ADD_SHOP_PATH,
         },
       ],
     },
@@ -807,7 +809,7 @@ const pages: Array<{ title: string; slug: string; seo: { title: string; descript
     ),
     {
       title: 'Add a listing',
-      slug: 'add',
+      slug: ADD_SHOP_SLUG,
       seo: {
         title: 'Add a listing — Glasses Near Me',
         description: 'Add an optical shop that the directory has missed. Free, and it enters the same list as every other shop.',
@@ -1032,7 +1034,85 @@ const libraryPages = guideLibrary
     }),
   )
 
+const HREF_KEYS = new Set(['primaryHref', 'secondaryHref', 'linkHref', 'href'])
+
+function rewriteAddHrefs(value: unknown): { value: unknown; changed: boolean } {
+  if (Array.isArray(value)) {
+    let changed = false
+    const next = value.map((item) => {
+      const result = rewriteAddHrefs(item)
+      if (result.changed) changed = true
+      return result.value
+    })
+    return { value: changed ? next : value, changed }
+  }
+
+  if (value && typeof value === 'object') {
+    let changed = false
+    const next: Record<string, unknown> = {}
+    for (const [key, child] of Object.entries(value as Record<string, unknown>)) {
+      if (HREF_KEYS.has(key) && child === '/add') {
+        next[key] = ADD_SHOP_PATH
+        changed = true
+        continue
+      }
+      const result = rewriteAddHrefs(child)
+      next[key] = result.value
+      if (result.changed) changed = true
+    }
+    return { value: changed ? next : value, changed }
+  }
+
+  return { value, changed: false }
+}
+
+async function migrateLegacyAddPage(payload: Payload) {
+  const legacy = await payload.find({
+    collection: 'pages',
+    depth: 0,
+    limit: 1,
+    where: { slug: { equals: 'add' } },
+  })
+  const existing = legacy.docs[0]
+  if (!existing) return
+
+  const modern = await payload.find({
+    collection: 'pages',
+    depth: 0,
+    limit: 1,
+    where: { slug: { equals: ADD_SHOP_SLUG } },
+  })
+  if (modern.docs[0]) return
+
+  await payload.update({
+    collection: 'pages',
+    id: existing.id,
+    data: { slug: ADD_SHOP_SLUG },
+  })
+}
+
+async function rewriteStoredAddHrefs(payload: Payload) {
+  const found = await payload.find({
+    collection: 'pages',
+    depth: 0,
+    limit: 500,
+    pagination: false,
+  })
+
+  for (const page of found.docs) {
+    const result = rewriteAddHrefs(page.layout)
+    if (!result.changed) continue
+    await payload.update({
+      collection: 'pages',
+      id: page.id,
+      data: { layout: result.value } as never,
+    })
+  }
+}
+
 export async function seedDemoPages(payload: Payload) {
+  await migrateLegacyAddPage(payload)
+
   for (const page of [...pages, ...libraryPages]) {
     const existing = await payload.find({
       collection: 'pages',
@@ -1047,4 +1127,6 @@ export async function seedDemoPages(payload: Payload) {
       data: page as never,
     })
   }
+
+  await rewriteStoredAddHrefs(payload)
 }
