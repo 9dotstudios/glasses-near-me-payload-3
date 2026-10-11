@@ -6,9 +6,9 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "node ./scripts/patch-workers-pbkdf2.mjs && node ./scripts/verify-workers-pbkdf2.mjs && rm -rf .next && opennextjs-cloudflare build && node ./scripts/assert-workers-pbkdf2-bundle.mjs",
+    "build": "node ./scripts/patch-workers-pbkdf2.mjs && node ./scripts/verify-workers-pbkdf2.mjs && rm -rf .next && opennextjs-cloudflare build && node ./scripts/patch-node-sqlite.mjs && node ./scripts/assert-no-node-sqlite.mjs && node ./scripts/assert-workers-pbkdf2-bundle.mjs",
     "deploy": "npm run deploy:database && npm run deploy:app && npm run deploy:secret",
-    "deploy:app": "opennextjs-cloudflare deploy -- --keep-vars",
+    "deploy:app": "node ./scripts/patch-node-sqlite.mjs && opennextjs-cloudflare deploy -- --keep-vars",
     "deploy:database": "cross-env NODE_ENV=production PAYLOAD_SECRET=ignore payload migrate && wrangler d1 execute D1 --command 'PRAGMA optimize' --remote",
     "deploy:secret": "node ./scripts/ensure-payload-secret.mjs",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
@@ -20,7 +20,9 @@
     "ii": "pnpm install --ignore-workspace",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
-    "preview": "node ./scripts/patch-workers-pbkdf2.mjs && node ./scripts/verify-workers-pbkdf2.mjs && rm -rf .next && opennextjs-cloudflare build && node ./scripts/assert-workers-pbkdf2-bundle.mjs && opennextjs-cloudflare preview --env=$CLOUDFLARE_ENV",
+    "preview": "node ./scripts/patch-workers-pbkdf2.mjs && node ./scripts/verify-workers-pbkdf2.mjs && rm -rf .next && opennextjs-cloudflare build && node ./scripts/patch-node-sqlite.mjs && node ./scripts/assert-no-node-sqlite.mjs && node ./scripts/assert-workers-pbkdf2-bundle.mjs && opennextjs-cloudflare preview --env=$CLOUDFLARE_ENV",
+    "seed:claim-products": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-claim-products.ts",
+    "seed:test-retailer": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-test-retailer.ts",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.config.ts",
@@ -30,6 +32,7 @@
     "@opennextjs/cloudflare": "^1.11.0",
     "@payloadcms/db-d1-sqlite": "3.90.0",
     "@payloadcms/next": "3.90.0",
+    "@payloadcms/plugin-ecommerce": "3.90.0",
     "@payloadcms/richtext-lexical": "3.90.0",
     "@payloadcms/storage-r2": "3.90.0",
     "@payloadcms/ui": "3.90.0",
@@ -41,7 +44,8 @@
     "next": "16.3.8",
     "payload": "3.90.0",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "stripe": "^23.0.0"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

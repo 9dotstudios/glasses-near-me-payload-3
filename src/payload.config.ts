@@ -14,6 +14,7 @@ import { Pages } from './collections/Pages'
 import { Shops } from './collections/Shops'
 import { Towns } from './collections/Towns'
 import { Users } from './collections/Users'
+import { ecommerce } from './plugins/ecommerce'
 import { seedDemoPages } from './seed/demo'
 import { seedDirectory } from './seed/directory'
 
@@ -146,6 +147,7 @@ export default buildConfig({
       bucket: cloudflare.env.R2,
       collections: { media: true },
     }),
+    ecommerce(),
   ],
 })
 

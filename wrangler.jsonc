@@ -2,6 +2,10 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
   "name": "glasses-near-me-payload",
+  // Workers cannot resolve the optional Node built-in. Point it at a stub before upload.
+  "alias": {
+    "node:sqlite": "./src/stubs/node-sqlite.mjs",
+  },
   "account_id": "94068cc076ded5a2933285c09a5f9d0d",
   // Preview-only: workers.dev subdomain. Do not add routes or custom domains.
   "workers_dev": true,

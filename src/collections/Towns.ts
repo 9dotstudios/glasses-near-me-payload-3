@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
+import { adminAccess, hideFromRetailers } from '@/access/roles'
 import { normalizeSlug, validateSlug } from '@/lib/directory'
 
 export const Towns: CollectionConfig = {
@@ -14,9 +15,14 @@ export const Towns: CollectionConfig = {
     defaultColumns: ['name', 'slug', 'country'],
     listSearchableFields: ['name', 'slug'],
     description: 'Towns and areas. Filter the list by country.',
+    hidden: hideFromRetailers,
   },
   access: {
+    admin: adminAccess,
+    create: adminAccess,
+    delete: adminAccess,
     read: () => true,
+    update: adminAccess,
   },
   indexes: [
     {

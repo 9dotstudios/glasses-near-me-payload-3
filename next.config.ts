@@ -1,4 +1,9 @@
+import path from 'path'
+import { fileURLToPath } from 'url'
+
 import { withPayload } from '@payloadcms/next/withPayload'
+
+const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -39,6 +44,12 @@ const nextConfig = {
       '.cjs': ['.cts', '.cjs'],
       '.js': ['.ts', '.tsx', '.js', '.jsx'],
       '.mjs': ['.mts', '.mjs'],
+    }
+
+    // Optional `node:sqlite` imports fail Wrangler upload. Alias them to a stub.
+    webpackConfig.resolve.alias = {
+      ...webpackConfig.resolve.alias,
+      'node:sqlite': path.resolve(dirname, 'src/stubs/node-sqlite.mjs'),
     }
 
     return webpackConfig
