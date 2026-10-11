@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import React from 'react'
 
+import { withTrailingSlash } from '@/lib/routes'
+
 type Props = {
   primaryLabel?: string | null
   primaryHref?: string | null
@@ -35,7 +37,11 @@ export function SchemeButtons({
         if (!button) return null
         const className = button.variant === 'secondary' ? 'gnm-btn gnm-btn-secondary' : 'gnm-btn'
         return (
-          <Link key={button.href + button.label} href={button.href} className={className}>
+          <Link
+            key={button.href + button.label}
+            href={withTrailingSlash(button.href)}
+            className={className}
+          >
             {button.label}
             {button.variant === 'primary' && primaryArrow ? (
               <span className="material-symbols-rounded" aria-hidden="true">

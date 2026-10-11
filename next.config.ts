@@ -2,11 +2,19 @@ import { withPayload } from '@payloadcms/next/withPayload'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // glassesnearme.org canonical paths end with `/`.
+  // `/about` 308s to `/about/`. `/about/` is served and is not 308'd back to `/about`.
+  trailingSlash: true,
   async redirects() {
     return [
       {
         source: '/add',
-        destination: '/for-opticians/add-your-shop',
+        destination: '/for-opticians/add-your-shop/',
+        permanent: false,
+      },
+      {
+        source: '/add/',
+        destination: '/for-opticians/add-your-shop/',
         permanent: false,
       },
     ]

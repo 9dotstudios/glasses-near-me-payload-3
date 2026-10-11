@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
+import { withTrailingSlash } from '@/lib/routes'
 import type { Page } from '@/payload-types'
 
 import { Eyebrow, Icon, Section, isDarkScheme, normalizeScheme } from './Section'
@@ -126,7 +127,7 @@ function SearchPrompt({ block }: { block: Extract<LayoutBlock, { blockType: 'sea
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
         <Intro heading={block.heading} body={block.body} />
         <form
-          action={block.href || '/find-a-shop'}
+          action={withTrailingSlash(block.href || '/find-a-shop')}
           method="get"
           className="gnm-search"
           role="search"
@@ -183,12 +184,15 @@ function FeatureGrid({ block }: { block: Extract<LayoutBlock, { blockType: 'feat
               </div>
               {item.linkLabel && item.linkHref ? (
                 media ? (
-                  <Link href={item.linkHref} className="gnm-btn gnm-btn-secondary mt-auto">
+                  <Link
+                    href={withTrailingSlash(item.linkHref)}
+                    className="gnm-btn gnm-btn-secondary mt-auto"
+                  >
                     {item.linkLabel}
                   </Link>
                 ) : (
                   <Link
-                    href={item.linkHref}
+                    href={withTrailingSlash(item.linkHref)}
                     className="mt-auto inline-flex items-center gap-2 font-medium"
                   >
                     {item.linkLabel}
@@ -267,7 +271,7 @@ function ContentFeed({ block }: { block: Extract<LayoutBlock, { blockType: 'cont
         <div className="grid items-end gap-8 lg:grid-cols-[1fr_auto] lg:gap-20">
           <Intro eyebrow={block.eyebrow} heading={block.heading} body={block.body} />
           {block.linkLabel && block.linkHref ? (
-            <Link href={block.linkHref} className="gnm-btn gnm-btn-secondary">
+            <Link href={withTrailingSlash(block.linkHref)} className="gnm-btn gnm-btn-secondary">
               {block.linkLabel}
             </Link>
           ) : null}
@@ -279,7 +283,7 @@ function ContentFeed({ block }: { block: Extract<LayoutBlock, { blockType: 'cont
             textCards ? (
               <Link
                 key={item.id || item.title}
-                href={item.href || '/guides'}
+                href={withTrailingSlash(item.href || '/guides')}
                 className="gnm-library-card"
               >
                 <h3>{item.title}</h3>
@@ -299,7 +303,10 @@ function ContentFeed({ block }: { block: Extract<LayoutBlock, { blockType: 'cont
                   {item.excerpt ? <p className="gnm-body max-w-none">{item.excerpt}</p> : null}
                 </div>
                 {item.href ? (
-                  <Link href={item.href} className="inline-flex items-center gap-2 font-medium">
+                  <Link
+                    href={withTrailingSlash(item.href)}
+                    className="inline-flex items-center gap-2 font-medium"
+                  >
                     Read the guide
                     <span className="material-symbols-rounded text-xl">arrow_forward</span>
                   </Link>

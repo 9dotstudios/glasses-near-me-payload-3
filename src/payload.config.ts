@@ -8,10 +8,14 @@ import { CloudflareContext, getCloudflareContext } from '@opennextjs/cloudflare'
 import { GetPlatformProxyOptions } from 'wrangler'
 import { r2Storage } from '@payloadcms/storage-r2'
 
+import { Countries } from './collections/Countries'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
+import { Shops } from './collections/Shops'
+import { Towns } from './collections/Towns'
 import { Users } from './collections/Users'
 import { seedDemoPages } from './seed/demo'
+import { seedDirectory } from './seed/directory'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -99,7 +103,17 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Pages],
+  localization: {
+    locales: [
+      { label: 'English', code: 'en' },
+      { label: 'Bahasa Melayu', code: 'ms' },
+      { label: '中文', code: 'zh' },
+      { label: '中文（繁體）', code: 'zh-Hant' },
+    ],
+    defaultLocale: 'en',
+    fallback: true,
+  },
+  collections: [Users, Media, Countries, Towns, Shops, Pages],
   editor: lexicalEditor(),
   secret: readPayloadSecret(cloudflare.env),
   serverURL,
@@ -114,6 +128,7 @@ export default buildConfig({
     if (isMigrate) return
     try {
       await seedDemoPages(payload)
+      await seedDirectory(payload)
     } catch (error) {
       payload.logger.error({ err: error, msg: 'Glasses Near Me demo seed skipped' })
     }

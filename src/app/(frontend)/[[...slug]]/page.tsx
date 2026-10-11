@@ -5,6 +5,7 @@ import React from 'react'
 
 import { RenderBlocks } from '@/components/RenderBlocks'
 import { getPageBySlug } from '@/lib/pages'
+import { withTrailingSlash } from '@/lib/routes'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,8 +19,15 @@ type Args = {
 }
 
 function pathFromSlug(slug?: string[]) {
-  if (!slug?.length) return 'home'
-  return slug.join('/')
+  const parts = slug?.filter((part) => part.length > 0) ?? []
+  if (!parts.length) return 'home'
+  return parts.join('/')
+}
+
+function canonicalPath(slug?: string[]) {
+  const path = pathFromSlug(slug)
+  if (path === 'home') return '/'
+  return withTrailingSlash(`/${path}`)
 }
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
@@ -35,6 +43,9 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   return {
     title: page.seo?.title || page.title,
     description: page.seo?.description || undefined,
+    alternates: {
+      canonical: canonicalPath(slug),
+    },
   }
 }
 
