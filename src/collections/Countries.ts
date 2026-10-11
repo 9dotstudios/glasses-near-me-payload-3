@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
+import { adminAccess, hideFromRetailers } from '@/access/roles'
 import { normalizeSlug, validateSlug } from '@/lib/directory'
 
 export const Countries: CollectionConfig = {
@@ -14,9 +15,14 @@ export const Countries: CollectionConfig = {
     defaultColumns: ['name', 'code', 'slug'],
     listSearchableFields: ['name', 'code', 'slug'],
     description: 'Malaysia, Singapore, and Australia. Filter towns and shops from these records.',
+    hidden: hideFromRetailers,
   },
   access: {
+    admin: adminAccess,
+    create: adminAccess,
+    delete: adminAccess,
     read: () => true,
+    update: adminAccess,
   },
   fields: [
     {
