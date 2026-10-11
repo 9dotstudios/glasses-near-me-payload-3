@@ -8,10 +8,14 @@ import { CloudflareContext, getCloudflareContext } from '@opennextjs/cloudflare'
 import { GetPlatformProxyOptions } from 'wrangler'
 import { r2Storage } from '@payloadcms/storage-r2'
 
+import { Countries } from './collections/Countries'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
+import { Shops } from './collections/Shops'
+import { Towns } from './collections/Towns'
 import { Users } from './collections/Users'
 import { seedDemoPages } from './seed/demo'
+import { seedDirectory } from './seed/directory'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -74,8 +78,15 @@ const cloudflareLogger = {
   silent: () => {},
 } as any // Use PayloadLogger type when it's exported
 
+// Bracket access so Next does not inline this during the production build.
+const nextPhase = process.env['NEXT_PHASE']
+const isNextBuild = nextPhase === 'phase-production-build'
+
+// `next build` workers are production but not the Cloudflare runtime. They load
+// this config while collecting page data and need a local D1 proxy. The Worker
+// itself uses getCloudflareContext.
 const cloudflare =
-  isCLI || !isProduction
+  isCLI || !isProduction || isNextBuild
     ? await getCloudflareContextFromWrangler()
     : await getCloudflareContext({ async: true })
 
@@ -99,7 +110,17 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Pages],
+  localization: {
+    locales: [
+      { label: 'English', code: 'en' },
+      { label: 'Bahasa Melayu', code: 'ms' },
+      { label: '中文', code: 'zh' },
+      { label: '中文（繁體）', code: 'zh-Hant' },
+    ],
+    defaultLocale: 'en',
+    fallback: true,
+  },
+  collections: [Users, Media, Countries, Towns, Shops, Pages],
   editor: lexicalEditor(),
   secret: readPayloadSecret(cloudflare.env),
   serverURL,
@@ -110,10 +131,12 @@ export default buildConfig({
   logger: isProduction ? cloudflareLogger : undefined,
   onInit: async (payload) => {
     if (process.env.SKIP_SEED === 'true') return
+    if (process.env['NEXT_PHASE'] === 'phase-production-build') return
     const isMigrate = process.argv.some((value) => value.includes('migrate'))
     if (isMigrate) return
     try {
       await seedDemoPages(payload)
+      await seedDirectory(payload)
     } catch (error) {
       payload.logger.error({ err: error, msg: 'Glasses Near Me demo seed skipped' })
     }
@@ -132,7 +155,17 @@ function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
     ({ getPlatformProxy }) =>
       getPlatformProxy({
         environment: process.env.CLOUDFLARE_ENV,
-        remoteBindings: isProduction,
+        // Remote D1 is only for production `payload migrate` (`pnpm deploy`).
+        remoteBindings:
+          isProduction && !isNextBuild && process.argv.some((value) => value.includes('migrate')),
+        // Page-data workers each open D1. A shared file locks with SQLITE_BUSY.
+        ...(isNextBuild
+          ? {
+              persist: {
+                path: path.join(dirname, '..', '.wrangler', 'build', String(process.pid)),
+              },
+            }
+          : {}),
       } satisfies GetPlatformProxyOptions),
   )
 }

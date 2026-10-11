@@ -69,6 +69,9 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    countries: Country;
+    towns: Town;
+    shops: Shop;
     pages: Page;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -79,6 +82,9 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    countries: CountriesSelect<false> | CountriesSelect<true>;
+    towns: TownsSelect<false> | TownsSelect<true>;
+    shops: ShopsSelect<false> | ShopsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -88,10 +94,11 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
+  fallbackLocale:
+    ('false' | 'none' | 'null') | false | null | ('en' | 'ms' | 'zh' | 'zh-Hant') | ('en' | 'ms' | 'zh' | 'zh-Hant')[];
   globals: {};
   globalsSelect: {};
-  locale: null;
+  locale: 'en' | 'ms' | 'zh' | 'zh-Hant';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -162,6 +169,92 @@ export interface Media {
   filesize?: number | null;
   width?: number | null;
   height?: number | null;
+}
+/**
+ * Malaysia, Singapore, and Australia. Filter towns and shops from these records.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "countries".
+ */
+export interface Country {
+  id: number;
+  name: string;
+  code: 'MY' | 'SG' | 'AU';
+  /**
+   * Public path segment, such as malaysia. Lowercase, no slashes.
+   */
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Towns and areas. Filter the list by country.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "towns".
+ */
+export interface Town {
+  id: number;
+  name: string;
+  /**
+   * Unique within the country. Lowercase, no slashes.
+   */
+  slug: string;
+  /**
+   * Filter the town list by this country.
+   */
+  country: number | Country;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Optical shops. Filter the list by country or town.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shops".
+ */
+export interface Shop {
+  id: number;
+  name: string;
+  /**
+   * Unique within the town. Lowercase, no slashes.
+   */
+  slug: string;
+  /**
+   * Sets which towns you can pick. Saved from the town so this list can filter by country.
+   */
+  country: number | Country;
+  /**
+   * Filter the shop list by this town.
+   */
+  town: number | Town;
+  address?: string | null;
+  phone?: string | null;
+  hours?: string | null;
+  photos?: (number | Media)[] | null;
+  /**
+   * Latitude.
+   */
+  lat?: number | null;
+  /**
+   * Longitude.
+   */
+  lng?: number | null;
+  /**
+   * Google place_id for this shop.
+   */
+  placeId?: string | null;
+  /**
+   * Absolute http or https URL. Other schemes are rejected.
+   */
+  website?: string | null;
+  claimStatus: 'unclaimed' | 'pending' | 'claimed';
+  /**
+   * Derived from website. Not stored.
+   */
+  hasWebsite?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Marketing pages. The page with slug "home" is served at /. Other slugs can include slashes, such as find-a-shop/malaysia.
@@ -476,6 +569,18 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
+        relationTo: 'countries';
+        value: number | Country;
+      } | null)
+    | ({
+        relationTo: 'towns';
+        value: number | Town;
+      } | null)
+    | ({
+        relationTo: 'shops';
+        value: number | Shop;
+      } | null)
+    | ({
         relationTo: 'pages';
         value: number | Page;
       } | null);
@@ -560,6 +665,50 @@ export interface MediaSelect<T extends boolean = true> {
   filesize?: T;
   width?: T;
   height?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "countries_select".
+ */
+export interface CountriesSelect<T extends boolean = true> {
+  name?: T;
+  code?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "towns_select".
+ */
+export interface TownsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  country?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shops_select".
+ */
+export interface ShopsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  country?: T;
+  town?: T;
+  address?: T;
+  phone?: T;
+  hours?: T;
+  photos?: T;
+  lat?: T;
+  lng?: T;
+  placeId?: T;
+  website?: T;
+  claimStatus?: T;
+  hasWebsite?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

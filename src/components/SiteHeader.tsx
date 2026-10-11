@@ -10,30 +10,30 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
 
-import { ADD_SHOP_PATH } from '@/lib/routes'
+import { ADD_SHOP_PATH, withTrailingSlash } from '@/lib/routes'
 
 const countries = [
   {
-    href: '/find-a-shop/malaysia',
+    href: '/find-a-shop/malaysia/',
     title: 'Malaysia',
     detail: '1,079 shops across 42 towns',
   },
   {
-    href: '/find-a-shop/singapore',
+    href: '/find-a-shop/singapore/',
     title: 'Singapore',
     detail: '280 shops across 108 areas',
   },
   {
-    href: '/find-a-shop',
+    href: '/find-a-shop/',
     title: 'All countries',
     detail: 'See every country we cover',
   },
 ]
 
 const links = [
-  { href: '/guides', label: 'Guides' },
-  { href: '/about', label: 'About' },
-  { href: '/for-opticians', label: 'For opticians' },
+  { href: '/guides/', label: 'Guides' },
+  { href: '/about/', label: 'About' },
+  { href: '/for-opticians/', label: 'For opticians' },
 ]
 
 export function SiteHeader() {
@@ -66,7 +66,7 @@ export function SiteHeader() {
               {countries.map((country) => (
                 <DropdownMenuItem key={country.href} asChild>
                   <Link
-                    href={country.href}
+                    href={withTrailingSlash(country.href)}
                     className="flex flex-col items-start gap-0.5 rounded-xl px-3 py-2"
                   >
                     <span className="font-medium">{country.title}</span>
@@ -77,11 +77,14 @@ export function SiteHeader() {
             </DropdownMenuContent>
           </DropdownMenu>
           {links.map((link) => (
-            <Link key={link.href} href={link.href} className="gnm-nav-link">
+            <Link key={link.href} href={withTrailingSlash(link.href)} className="gnm-nav-link">
               {link.label}
             </Link>
           ))}
-          <Link href={ADD_SHOP_PATH} className="gnm-btn gnm-btn-small gnm-nav-cta">
+          <Link
+            href={withTrailingSlash(ADD_SHOP_PATH)}
+            className="gnm-btn gnm-btn-small gnm-nav-cta"
+          >
             Add your shop
           </Link>
         </nav>
@@ -109,7 +112,7 @@ export function SiteHeader() {
             {countries.map((country) => (
               <Link
                 key={country.href}
-                href={country.href}
+                href={withTrailingSlash(country.href)}
                 onClick={() => setOpen(false)}
                 className="font-medium"
               >
@@ -124,7 +127,7 @@ export function SiteHeader() {
             {links.map((link) => (
               <Link
                 key={link.href}
-                href={link.href}
+                href={withTrailingSlash(link.href)}
                 onClick={() => setOpen(false)}
                 className="gnm-nav-link px-0"
               >
@@ -132,7 +135,7 @@ export function SiteHeader() {
               </Link>
             ))}
             <Link
-              href={ADD_SHOP_PATH}
+              href={withTrailingSlash(ADD_SHOP_PATH)}
               onClick={() => setOpen(false)}
               className="gnm-btn gnm-btn-small gnm-nav-cta mt-3"
             >
