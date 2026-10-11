@@ -3,6 +3,7 @@ import * as migration_20261002_003631 from './20261002_003631'
 import * as migration_20261002_032654 from './20261002_032654'
 import * as migration_20261002_120000 from './20261002_120000'
 import * as migration_20261011_035219_directory_countries_towns_shops from './20261011_035219_directory_countries_towns_shops'
+import * as migration_20261011_043254_guides from './20261011_043254_guides'
 
 export const migrations = [
   {
@@ -29,5 +30,10 @@ export const migrations = [
     up: migration_20261011_035219_directory_countries_towns_shops.up,
     down: migration_20261011_035219_directory_countries_towns_shops.down,
     name: '20261011_035219_directory_countries_towns_shops',
+  },
+  {
+    up: migration_20261011_043254_guides.up,
+    down: migration_20261011_043254_guides.down,
+    name: '20261011_043254_guides',
   },
 ]

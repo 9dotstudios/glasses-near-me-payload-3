@@ -1,0 +1,7 @@
+{
+  "nav": [
+    { "slug": "malaysia", "name": "Malaysia", "href": "/find-a-shop/malaysia/", "code": "MY" },
+    { "slug": "singapore", "name": "Singapore", "href": "/find-a-shop/singapore/", "code": "SG" },
+    { "slug": "australia", "name": "Australia", "href": "/find-a-shop/australia/", "code": "AU" }
+  ]
+}

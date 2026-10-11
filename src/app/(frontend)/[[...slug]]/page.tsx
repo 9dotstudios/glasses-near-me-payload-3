@@ -3,7 +3,9 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
+import { GuideArticle } from '@/components/GuideArticle'
 import { RenderBlocks } from '@/components/RenderBlocks'
+import { getGuideBySlug, isGuidePath } from '@/lib/guides'
 import { getPageBySlug } from '@/lib/pages'
 import { withTrailingSlash } from '@/lib/routes'
 
@@ -32,7 +34,20 @@ function canonicalPath(slug?: string[]) {
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug } = await params
-  const page = await getPageBySlug(pathFromSlug(slug))
+  const path = pathFromSlug(slug)
+  const page = await getPageBySlug(path)
+  if (!page && isGuidePath(path)) {
+    const guide = await getGuideBySlug(path)
+    if (guide) {
+      return {
+        title: guide.seo?.title || guide.title,
+        description: guide.seo?.description || guide.excerpt || undefined,
+        alternates: {
+          canonical: canonicalPath(slug),
+        },
+      }
+    }
+  }
   if (!page) {
     return {
       title: 'Glasses Near Me',
@@ -55,6 +70,12 @@ export default async function Page({ params, searchParams }: Args) {
   const page = await getPageBySlug(path)
 
   if (!page) {
+    if (isGuidePath(path)) {
+      const guide = await getGuideBySlug(path)
+      if (guide) {
+        return <GuideArticle title={guide.title} excerpt={guide.excerpt} body={guide.body} />
+      }
+    }
     if (!slug?.length) return <MissingHome />
     notFound()
   }
