@@ -96,6 +96,32 @@ pnpm dev                 # Next.js dev server
 pnpm test:int            # Payload API smoke test, including the seeded home page
 pnpm generate:types      # Wrangler Env types and payload-types.ts
 pnpm payload migrate     # apply src/migrations to the local D1
+pnpm import:live         # upsert the live directory into the local D1
 ```
 
-Migrations: the Studios users/media snapshots, plus `20261002_032654` for Pages and blocks.
+Migrations: the Studios users/media snapshots, `20261002_032654` for Pages and blocks, the directory tables, and `guides`.
+
+## Import the live directory
+
+`pnpm import:live` reads [glassesnearme-org](https://github.com/9dotstudios/glassesnearme-org): shop and town data files, generated HTML, and `sitemap.xml`. It upserts Malaysia, Singapore, and Australia, every town, every shop, and every guide. Shop slugs stay the live path segment (`d-optics-miri` under town `miri`). Guide slugs stay the live Relume paths (`guides/...`, `ms/blog/...`, `zh/blog/...`, `zh-Hant/blog/...`) on localized fields of the `guides` collection. A website is stored only when it is an absolute `http` or `https` URL. Anything else is saved blank. Running it again updates the same rows.
+
+Point it at a checkout you already have with `LIVE_SOURCE`. Otherwise it clones the repo into `.cache/glassesnearme-org`. If that clone is not readable, it mirrors the published HTML and `/data` JSON from `https://glassesnearme.org` into `.cache/glassesnearme-live` and records that in the report. `IMPORT_REFRESH=1` fetches again. `IMPORT_NO_MIRROR=1` fails instead of mirroring.
+
+The summary is written to `reports/import-live.json` (override with `IMPORT_REPORT`). It counts rows by type, country, and locale, plus skipped rows. A dry run of the published site (the git repo was not readable from this checkout) saw 2793 sitemap URLs: 3 countries, 587 towns (MY 42, SG 108, AU 437), 2160 shops (MY 1247, SG 280, AU 633), and guides in en 28 / ms 1 / zh 0 / zh-Hant 0. Place IDs are not in the published HTML, so that run reports them missing. They are filled when the repo’s shop data files are present. Chinese guide files are imported the same way when the repo contains them.
+
+```bash
+# Counts only. Does not open D1.
+IMPORT_DRY_RUN=1 pnpm import:live
+
+# Local D1. Development pushes the schema. PAYLOAD_SECRET must be set.
+cp .env.example .env
+pnpm import:live
+
+# Remote D1 from wrangler.jsonc. Wrangler must already be logged in
+# (`wrangler login` or CLOUDFLARE_API_TOKEN). Payload's local API uses
+# getPlatformProxy; remote bindings turn on only when both of these are set.
+# The script runs payload migrate against that remote database first.
+NODE_ENV=production PAYLOAD_REMOTE_D1=1 pnpm import:live
+```
+
+`PAYLOAD_SECRET` in `.env` is enough for the local API. It is not the Worker secret. Do not print either value. Shops keep an existing `claimStatus` and `photos` on update. New shops start `unclaimed`.

@@ -18,6 +18,7 @@
     "generate:types:cloudflare": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "generate:types:payload": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "ii": "pnpm install --ignore-workspace",
+    "import:live": "cross-env SKIP_SEED=true NODE_OPTIONS=--no-deprecation payload run src/scripts/import-live.ts",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "preview": "node ./scripts/patch-workers-pbkdf2.mjs && node ./scripts/verify-workers-pbkdf2.mjs && rm -rf .next && opennextjs-cloudflare build && node ./scripts/assert-workers-pbkdf2-bundle.mjs && opennextjs-cloudflare preview --env=$CLOUDFLARE_ENV",

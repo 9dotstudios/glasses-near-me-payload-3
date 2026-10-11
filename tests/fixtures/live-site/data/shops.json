@@ -1,0 +1,30 @@
+[
+  {
+    "name": "D-Optics",
+    "slug": "d-optics-miri",
+    "town": "miri",
+    "country": "MY",
+    "place_id": "ChIJdopticsmiri0000000001",
+    "lat": 4.3990675,
+    "lng": 113.9904875,
+    "phone": "+60 19-413 7558",
+    "website": "instagram.com/d_optics",
+    "address": "Level 2, Imperial Mall, Miri",
+    "hours": "Monday 10:00–19:00"
+  },
+  {
+    "name": "Duplicate Optics",
+    "slug": "duplicate-optics-miri",
+    "town": "miri",
+    "country": "MY",
+    "place_id": "ChIJdopticsmiri0000000001",
+    "address": "Somewhere else"
+  },
+  {
+    "name": "Bad Slug Shop",
+    "slug": "Not A Slug",
+    "town": "miri",
+    "country": "MY",
+    "address": "1 Jalan Test"
+  }
+]

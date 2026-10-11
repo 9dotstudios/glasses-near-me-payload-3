@@ -9,6 +9,7 @@ import { GetPlatformProxyOptions } from 'wrangler'
 import { r2Storage } from '@payloadcms/storage-r2'
 
 import { Countries } from './collections/Countries'
+import { Guides } from './collections/Guides'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Shops } from './collections/Shops'
@@ -120,7 +121,7 @@ export default buildConfig({
     defaultLocale: 'en',
     fallback: true,
   },
-  collections: [Users, Media, Countries, Towns, Shops, Pages],
+  collections: [Users, Media, Countries, Towns, Shops, Guides, Pages],
   editor: lexicalEditor(),
   secret: readPayloadSecret(cloudflare.env),
   serverURL,
@@ -155,9 +156,13 @@ function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
     ({ getPlatformProxy }) =>
       getPlatformProxy({
         environment: process.env.CLOUDFLARE_ENV,
-        // Remote D1 is only for production `payload migrate` (`pnpm deploy`).
+        // Remote D1 for production `payload migrate` (`pnpm deploy`) and for
+        // `NODE_ENV=production PAYLOAD_REMOTE_D1=1 pnpm import:live`.
         remoteBindings:
-          isProduction && !isNextBuild && process.argv.some((value) => value.includes('migrate')),
+          isProduction &&
+          !isNextBuild &&
+          (process.env['PAYLOAD_REMOTE_D1'] === '1' ||
+            process.argv.some((value) => value.includes('migrate'))),
         // Page-data workers each open D1. A shared file locks with SQLITE_BUSY.
         ...(isNextBuild
           ? {

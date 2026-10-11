@@ -72,6 +72,7 @@ export interface Config {
     countries: Country;
     towns: Town;
     shops: Shop;
+    guides: Guide;
     pages: Page;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -85,6 +86,7 @@ export interface Config {
     countries: CountriesSelect<false> | CountriesSelect<true>;
     towns: TownsSelect<false> | TownsSelect<true>;
     shops: ShopsSelect<false> | ShopsSelect<true>;
+    guides: GuidesSelect<false> | GuidesSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -253,6 +255,28 @@ export interface Shop {
    * Derived from website. Not stored.
    */
   hasWebsite?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Eye-care guides in en, ms, zh, and zh-Hant. Each locale slug is the live glassesnearme.org path.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "guides".
+ */
+export interface Guide {
+  id: number;
+  title: string;
+  /**
+   * Live path for this locale. English example: guides/eye-test-cost-miri. Malay: ms/blog/.... Chinese: zh/blog/... or zh-Hant/blog/....
+   */
+  slug: string;
+  excerpt?: string | null;
+  body?: string | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -581,6 +605,10 @@ export interface PayloadLockedDocument {
         value: number | Shop;
       } | null)
     | ({
+        relationTo: 'guides';
+        value: number | Guide;
+      } | null)
+    | ({
         relationTo: 'pages';
         value: number | Page;
       } | null);
@@ -707,6 +735,24 @@ export interface ShopsSelect<T extends boolean = true> {
   website?: T;
   claimStatus?: T;
   hasWebsite?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "guides_select".
+ */
+export interface GuidesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  body?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

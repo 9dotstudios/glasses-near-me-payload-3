@@ -1,0 +1,83 @@
+{
+  "generatedAt": "2026-10-11T04:35:34.617Z",
+  "dryRun": true,
+  "source": {
+    "kind": "live-mirror",
+    "repo": "https://github.com/9dotstudios/glassesnearme-org",
+    "note": "Git clone failed (Command failed: git clone --depth 1 https://github.com/9dotstudios/glassesnearme-org /workspace/.cache/glassesnearme-org). Read the published site at https://glassesnearme.org instead.",
+    "sitemapUrls": 2793,
+    "htmlFiles": 2790,
+    "dataFiles": 1,
+    "downloadFailures": 0
+  },
+  "counts": {
+    "countries": {
+      "created": 0,
+      "updated": 0,
+      "unchanged": 0,
+      "skipped": 0,
+      "byCode": {
+        "MY": 1,
+        "SG": 1,
+        "AU": 1
+      },
+      "byLocale": {
+        "en": 3,
+        "ms": 3,
+        "zh": 3,
+        "zh-Hant": 3
+      }
+    },
+    "towns": {
+      "created": 0,
+      "updated": 0,
+      "unchanged": 0,
+      "skipped": 0,
+      "byCountry": {
+        "MY": 42,
+        "SG": 108,
+        "AU": 437
+      },
+      "byLocale": {
+        "en": 587,
+        "ms": 0,
+        "zh": 0,
+        "zh-Hant": 0
+      }
+    },
+    "shops": {
+      "created": 0,
+      "updated": 0,
+      "unchanged": 0,
+      "skipped": 0,
+      "byCountry": {
+        "MY": 1247,
+        "SG": 280,
+        "AU": 633
+      },
+      "byLocale": {
+        "en": 2160,
+        "ms": 0,
+        "zh": 0,
+        "zh-Hant": 0
+      },
+      "websiteKept": 703,
+      "websiteBlanked": 0,
+      "placeIdPresent": 0,
+      "placeIdMissing": 2160
+    },
+    "guides": {
+      "created": 0,
+      "updated": 0,
+      "unchanged": 0,
+      "skipped": 0,
+      "byLocale": {
+        "en": 28,
+        "ms": 1,
+        "zh": 0,
+        "zh-Hant": 0
+      }
+    }
+  },
+  "skipped": []
+}
