@@ -378,7 +378,7 @@ async function writeLocales(
       locale,
       depth: 0,
       overrideAccess: true,
-    })) as Record<string, unknown>
+    })) as unknown as Record<string, unknown>
     const differs = Object.entries(data).some(([field, value]) => !textEq(current[field] as string | null, value))
     if (!differs) continue
     await payload.update({
@@ -432,7 +432,7 @@ async function findAll<T extends { id: number }>(
       overrideAccess: true,
       page,
     })
-    docs.push(...(result.docs as T[]))
+    docs.push(...(result.docs as unknown as T[]))
     if (!result.hasNextPage) break
     page += 1
   }
